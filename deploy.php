@@ -21,11 +21,11 @@
 	file_put_contents("process.pid",getmypid());
 
 	$commands = [ 'echo $PWD',
-	              'echo $PATH',
-	              'cd ../ && git submodule update --remote --merge',
+	              'echo $PATH',	              
 	              'cd ../ && git fetch --all 2>&1',
 	              'cd ../ && git reset --hard origin/master 2>&1',
 	              'cd ../ && git pull 2>&1',
+                'cd ../ && git submodule update --init --remote --merge',
 	              'cd ../ && git status 2>&1' ];
 
 	if(preg_match("/resolve/",$_SERVER["REQUEST_URI"])) {
