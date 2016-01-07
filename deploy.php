@@ -39,7 +39,7 @@
 	}
 
 	$commands = array_merge($commands,
-	                        [  'cd ../frontend && grunt build:'.$build.' --nomin',
+	                        [  'cd ../frontend && grunt build:'.$build.($build=='development' ? ' --nomin' : ''),
 	                           'rm -f process.pid',
 	                           'chown -R apache:apache ../frontend/dist']);
 ?>
