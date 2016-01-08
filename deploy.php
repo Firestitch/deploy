@@ -1,47 +1,52 @@
 <?
-	error_reporting(E_ALL);
-	ini_set('display_errors', 1);
-	date_default_timezone_set('America/Toronto');
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+  date_default_timezone_set('America/Toronto');
 
-	$pid = @file_get_contents("process.pid");
-	if($pid) {
-	        exec("kill ".$pid);
-	}
+  $pid = @file_get_contents("process.pid");
+  if($pid) {
+          exec("kill ".$pid);
+  }
 
-	@unlink("process.pid");
-	@mkdir("deploys");
-	$build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
+  @unlink("process.pid");
+  @mkdir("deploys");
+  $build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
 
-	if(!@$argv && @file_get_contents("php://input")) {
-	  $cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
-	  $pid = shell_exec($cmd);
-	  die("Process: ".$pid."\nBuild: ".$build."\nDate: ".date("Y-m-dTH:i:s"));
-	}
+  if(!@$argv && @file_get_contents("php://input")) {
+    $cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
+    $pid = shell_exec($cmd);
+    die("Process: ".$pid."\nBuild: ".$build."\nDate: ".date("Y-m-dTH:i:s"));
+  }
 
-	file_put_contents("process.pid",getmypid());
+  file_put_contents("process.pid",getmypid());
 
-	$commands = [ 'echo $PWD',
-	              'echo $PATH',	              
-	              'cd ../ && git fetch --all 2>&1',
-	              'cd ../ && git reset --hard origin/master 2>&1',
-	              'cd ../ && git pull 2>&1',
+  $is_development = $build=='development';
+
+  $commands = [ 'echo $PWD',
+                'echo $PATH',               
+                'cd ../ && git fetch --all 2>&1',
+                'cd ../ && git reset --hard origin/master 2>&1',
+                'cd ../ && git pull 2>&1',
                 'cd ../ && git submodule update --init --remote --merge',
-	              'cd ../ && git status 2>&1' ];
+                'cd ../ && git status 2>&1'];
 
-	if(preg_match("/resolve/",$_SERVER["REQUEST_URI"])) {
-	  $commands = array_merge($commands,
-	                            [   'cd ../frontend && bower install 2>&1',
-	                                'cd ../frontend && bower update 2>&1',
-	                                'cd ../frontend && npm install 2>&1']);
-	} else {
-	    $commands = array_merge($commands,
-	                            [ 'cd ../frontend && bower update 2>&1' ]);
-	}
+  if($is_development)
+      $commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
 
-	$commands = array_merge($commands,
-	                        [  'cd ../frontend && grunt build:'.$build.($build=='development' ? ' --nomin' : ''),
-	                           'rm -f process.pid',
-	                           'chown -R apache:apache ../frontend/dist']);
+  if(preg_match("/resolve/",$_SERVER["REQUEST_URI"])) {
+    $commands = array_merge($commands,
+                              [   'cd ../frontend && bower install 2>&1',
+                                  'cd ../frontend && bower update 2>&1',
+                                  'cd ../frontend && npm install 2>&1']);
+  } else {
+      $commands = array_merge($commands,
+                              [ 'cd ../frontend && bower update 2>&1' ]);
+  }
+
+  $commands = array_merge($commands,
+                          [  'cd ../frontend && grunt build:'.$build.($is_development ? ' --nomin' : ''),
+                             'rm -f process.pid',
+                             'chown -R apache:apache ../frontend/dist']);
 ?>
 <!DOCTYPE HTML>
 <html lang="en-US">
