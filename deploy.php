@@ -21,6 +21,7 @@
   file_put_contents("process.pid",getmypid());
 
   $is_development = $build=='development';
+  $is_staging     = $build=='staging';
 
   $commands = [ 'echo $PWD',
                 'echo $PATH',               
@@ -30,7 +31,7 @@
                 'cd ../ && git submodule update --init --remote --merge',
                 'cd ../ && git status 2>&1'];
 
-  if($is_development)
+  if($is_development || $is_staging)
       $commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
 
   if(preg_match("/resolve/",$_SERVER["REQUEST_URI"])) {
