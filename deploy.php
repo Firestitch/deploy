@@ -68,11 +68,11 @@
       var down = function() {
         setTimeout(function() {
           if($(".done").length) return;
-          $('body').animate({scrollTop: $(document).height()}, 'slow');
+          $('body').animate({scrollTop: $(document).height()}, 'fast');
           down();
         },1000);   
       }
-      down();
+      //down();
   </script> 
 
   <div class="output">
