@@ -11,6 +11,7 @@
   @unlink("process.pid");
   @mkdir("deploys");
   $build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
+  $branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
 
   if(!@$argv && @file_get_contents("php://input")) {
     $cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
@@ -26,7 +27,7 @@
   $commands = [ 'echo $PWD',
                 'echo $PATH',               
                 'cd ../ && git fetch --all 2>&1',
-                'cd ../ && git reset --hard origin/master 2>&1',
+                'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
                 'cd ../ && git pull 2>&1',
                 'cd ../ && git submodule update --init --remote --merge',
                 'cd ../ && git status 2>&1'];
