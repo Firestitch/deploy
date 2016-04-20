@@ -39,7 +39,8 @@
 
   if(preg_match("/resolve/",$_SERVER["REQUEST_URI"])) {
     $commands = array_merge($commands,
-                              [   'cd ../frontend && bower install 2>&1',
+                              [   'cd ../frontend && bower prune 2>&1',
+                                  'cd ../frontend && bower install 2>&1',
                                   'cd ../frontend && bower update 2>&1',
                                   'cd ../frontend && npm install 2>&1']);
   } else {
