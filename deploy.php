@@ -45,7 +45,8 @@
                                   'cd ../frontend && npm install 2>&1']);
   } else {
       $commands = array_merge($commands,
-                              [ 'cd ../frontend && bower update 2>&1' ]);
+                              [ 'cd ../frontend && bower prune 2>&1',
+                                'cd ../frontend && bower update 2>&1' ]);
   }
 
   $commands = array_merge($commands,
