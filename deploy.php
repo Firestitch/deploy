@@ -12,6 +12,7 @@
   @mkdir("deploys");
   $build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
   $branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
+  $nomin = @$_GET["nomin"] ? !!$_GET["nomin"] : (@$argv[3] ? !!$argv[3] : false);
 
   if(!@$argv && @file_get_contents("php://input")) {
     $cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
@@ -25,7 +26,7 @@
   $is_staging     = $build=='staging';
 
   $commands = [ 'echo $PWD',
-                'echo $PATH',               
+                'echo $PATH',
                 'cd ../ && git fetch --all 2>&1',
                 'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
                 'cd ../ && git pull 2>&1',
@@ -50,7 +51,7 @@
   }
 
   $commands = array_merge($commands,
-                          [  'cd ../frontend && grunt build:'.$build.($is_development ? ' --nomin' : ''),
+                          [  'cd ../frontend && grunt build:'.$build.($nomin || $is_development ? ' --nomin' : ''),
                              'rm -f process.pid',
                              'chown -R apache:apache ../frontend/dist']);
 ?>
@@ -81,10 +82,10 @@
           if($(".done").length) return;
           $('body').animate({scrollTop: $(document).height()}, 'fast');
           down();
-        },1000);   
+        },1000);
       }
       //down();
-  </script> 
+  </script>
 
   <div class="output">
     <? foreach($commands AS $command) { ?>
@@ -93,19 +94,19 @@
 
             <? @ob_flush() ?>
             <? flush() ?>
-            
+
             <?
               $descriptorspec = array(
                  0 => array("pipe", "r"),   // stdin is a pipe that the child will read from
                  1 => array("pipe", "w"),   // stdout is a pipe that the child will write to
                  2 => array("pipe", "w")    // stderr is a pipe that the child will write to
               );
-              
+
               flush();
               $process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
-              
+
               echo "<pre>";
-              
+
               if (is_resource($process)) {
                   while ($s = fgets($pipes[1])) {
                       print htmlentities(preg_replace("/\[\d+m/",'',$s));
@@ -113,13 +114,13 @@
                       flush();
                   }
               }
-              
+
               echo "</pre>";
 
               fclose($pipes[0]);
               fclose($pipes[1]);
               fclose($pipes[2]);
-              proc_close($process);      
+              proc_close($process);
             ?>
 
             <? @ob_flush() ?>
