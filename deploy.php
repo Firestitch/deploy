@@ -12,7 +12,7 @@
   @mkdir("deploys");
   $build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
   $branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
-  $nomin = @$_GET["nomin"] ? !!$_GET["nomin"] : (@$argv[3] ? !!$argv[3] : false);
+  $nomin = @array_key_exists("nomin",$_GET) ? true : (@$argv[3]=="nomin" ? true : false);
 
   if(!@$argv && @file_get_contents("php://input")) {
     $cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
