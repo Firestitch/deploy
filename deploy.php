@@ -30,6 +30,7 @@
                 'cd ../ && git fetch --all 2>&1',
                 'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
                 'cd ../ && git pull 2>&1',
+                'cd ../ && git submodule foreach --recursive git reset --hard 2>&1',
                 'cd ../ && git submodule update --init 2>&1',
                 'cd ../ && git submodule update deploy --init --remote --merge 2>&1',
                 'cd ../ && git status 2>&1'];
