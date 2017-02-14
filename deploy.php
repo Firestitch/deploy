@@ -30,7 +30,7 @@
                 'cd ../ && git fetch --all 2>&1',
                 'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
                 'cd ../ && git pull 2>&1',
-                'cd ../ && git submodule update --init --remote --merge 2>&1',
+                'cd ../ && git submodule update --init --merge 2>&1',
                 'cd ../ && git status 2>&1'];
 
   if($is_development || $is_staging) {
