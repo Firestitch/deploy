@@ -25,10 +25,11 @@
   $is_staging     = $build=='staging';
 
   $commands = [ 'echo $PWD',
-                'echo $PATH',               
+                'echo $PATH',
                 'cd ../ && git fetch --all 2>&1',
                 'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
                 'cd ../ && git pull 2>&1',
+                'cd ../ && git submodule foreach git reset --hard 2>&1>',
                 'cd ../ && git submodule update --init --remote --merge 2>&1',
                 'cd ../ && git status 2>&1'];
 
@@ -81,10 +82,10 @@
           if($(".done").length) return;
           $('body').animate({scrollTop: $(document).height()}, 'fast');
           down();
-        },1000);   
+        },1000);
       }
       //down();
-  </script> 
+  </script>
 
   <div class="output">
     <? foreach($commands AS $command) { ?>
@@ -93,19 +94,19 @@
 
             <? @ob_flush() ?>
             <? flush() ?>
-            
+
             <?
               $descriptorspec = array(
                  0 => array("pipe", "r"),   // stdin is a pipe that the child will read from
                  1 => array("pipe", "w"),   // stdout is a pipe that the child will write to
                  2 => array("pipe", "w")    // stderr is a pipe that the child will write to
               );
-              
+
               flush();
               $process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
-              
+
               echo "<pre>";
-              
+
               if (is_resource($process)) {
                   while ($s = fgets($pipes[1])) {
                       print htmlentities(preg_replace("/\[\d+m/",'',$s));
@@ -113,13 +114,13 @@
                       flush();
                   }
               }
-              
+
               echo "</pre>";
 
               fclose($pipes[0]);
               fclose($pipes[1]);
               fclose($pipes[2]);
-              proc_close($process);      
+              proc_close($process);
             ?>
 
             <? @ob_flush() ?>
