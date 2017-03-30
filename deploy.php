@@ -12,6 +12,7 @@
   @mkdir("deploys");
   $build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
   $branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
+  $nomin = @array_key_exists("nomin",$_GET) ? true : (@$argv[3]=="nomin" ? true : false);
 
   if(!@$argv && @file_get_contents("php://input")) {
     $cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
@@ -29,8 +30,9 @@
                 'cd ../ && git fetch --all 2>&1',
                 'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
                 'cd ../ && git pull 2>&1',
-                'cd ../ && git submodule foreach git reset --hard 2>&1>',
-                'cd ../ && git submodule update --init --remote --merge 2>&1',
+                'cd ../ && git submodule foreach --recursive git reset --hard 2>&1',
+                'cd ../ && git submodule update --init 2>&1',
+                'cd ../ && git submodule update --init --remote --merge deploy 2>&1',
                 'cd ../ && git status 2>&1'];
 
   if($is_development || $is_staging) {
@@ -51,9 +53,9 @@
   }
 
   $commands = array_merge($commands,
-                          [  'cd ../frontend && grunt build:'.$build.($is_development ? ' --nomin' : ''),
+                          [  'cd ../frontend && grunt build:'.$build.($nomin || $is_development ? ' --nomin' : ''),
                              'rm -f process.pid',
-                             'chown -R apache:apache ../frontend/dist']);
+                             'chown -R nginx:nginx ../frontend/dist']);
 ?>
 <!DOCTYPE HTML>
 <html lang="en-US">
