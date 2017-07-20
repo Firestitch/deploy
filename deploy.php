@@ -106,7 +106,7 @@
 
               flush();
               $process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
-
+              @fclose($pipes[0]);
               echo "<pre>";
 
               if (is_resource($process)) {
@@ -119,9 +119,8 @@
 
               echo "</pre>";
 
-              fclose($pipes[0]);
-              fclose($pipes[1]);
-              fclose($pipes[2]);
+              @fclose($pipes[1]);
+              @fclose($pipes[2]);
               proc_close($process);
             ?>
 
