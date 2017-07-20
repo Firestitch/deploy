@@ -111,7 +111,6 @@
 
               if (is_resource($process)) {
                   do {
-                      echo ;
                       print htmlentities(preg_replace("/\[\d+m/",'',fgets($pipes[1])));
                       $arr = proc_get_status($process);
                       @ob_flush();
