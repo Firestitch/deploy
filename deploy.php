@@ -110,11 +110,13 @@
               echo "<pre>";
 
               if (is_resource($process)) {
-                  while ($s = fgets($pipes[1])) {
-                      print htmlentities(preg_replace("/\[\d+m/",'',$s));
+                  do {
+                      echo ;
+                      print htmlentities(preg_replace("/\[\d+m/",'',fgets($pipes[1])));
+                      $arr = proc_get_status($process);
                       @ob_flush();
                       flush();
-                  }
+                  } while($arr['running']);
               }
 
               echo "</pre>";
