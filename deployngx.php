@@ -38,17 +38,13 @@
 	            'cd ../ && git submodule foreach --recursive git reset --hard 2>&1',
 	            'cd ../ && git submodule update --init 2>&1',
 	            'cd ../ && git submodule update --init --remote --merge deploy 2>&1',
-	            'cd ../ && git status 2>&1'];
+	            'cd ../ && git status 2>&1',
+	            'cd ../frontend && npm install 2>&1'];
 
 	/*if($is_development || $is_staging) {
 	  $commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
 	  $commands[] = 'cd ../backend/command && php init.php 2>&1';
 	}*/
-
-	if(preg_match("/resolve/",$_SERVER["REQUEST_URI"])) {
-		$commands = array_merge($commands,
-		                          [ 'cd ../frontend && npm install 2>&1']);
-	}
 
 	$commands = array_merge($commands,
 	                      [  'cd ../frontend && ng build',
