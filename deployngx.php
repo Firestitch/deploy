@@ -13,19 +13,19 @@
 
 	@unlink("process.pid");
 	@mkdir("deploys");
-	$build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
+	$env 	= @$_GET["env"] ? $_GET["env"] : (@$argv[1] ? $argv[1] : "dev");
 	$branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
 
 	if(!@$argv && @file_get_contents("php://input")) {
-		$cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
+		$cmd = "php deploy.php ".$env." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
 		$pid = shell_exec($cmd);
-		die("Process: ".$pid."\nBuild: ".$build."\nDate: ".date("Y-m-dTH:i:s"));
+		die("Process: ".$pid."\nEnvironment: ".$env."\nDate: ".date("Y-m-dTH:i:s"));
 	}
 
 	file_put_contents("process.pid",getmypid());
 
-	$is_development = $build=='development';
-	$is_staging     = $build=='staging';
+	$is_development = $env=='development';
+	$is_staging     = $env=='staging';
 
 	if(!$branch)
 		$branch = shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
@@ -47,7 +47,7 @@
 	}*/
 
 	$commands = array_merge($commands,
-	                      [  'cd ../frontend && ng build',
+	                      [  'cd ../frontend && ng build'.($env ? ' --env='.$env : ''),
 	                         'chown -R nginx:nginx ../frontend/dist']);
 ?>
 <!DOCTYPE HTML>
@@ -69,7 +69,7 @@
 	  }
 	</style>
 
-	<h1>Building <?=ucwords($build)?></h1>
+	<h1>Building <?=ucwords($env)?></h1>
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script>
 	  var down = function() {
@@ -123,10 +123,9 @@
 	<? } ?>
 	</div>
 
-	<h1 id="done-success" class="done dn"><?=ucwords($build)?> Build Complete!</h1>
+	<h1 id="done-success" class="done dn"><?=ucwords($env)?> Build Complete!</h1>
 	<div id="done-error" class="done dn">
-	  <h1>Error in <?=ucwords($build)?> Build!</h1>
-	  <a href="<?=$_SERVER["REQUEST_URI"]?>?resolve=true">Auto resolve with NPM and Bower update</a>
+	  <h1>Error in <?=ucwords($env)?> Build!</h1>
 	</div>
 
 	<script>
