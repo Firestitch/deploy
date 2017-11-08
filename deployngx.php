@@ -17,7 +17,7 @@
 	$branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
 
 	if(!@$argv && @file_get_contents("php://input")) {
-		$cmd = "php deploy.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
+		$cmd = "php deployngx.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
 		$pid = shell_exec($cmd);
 		die("Process: ".$pid."\nBuild: ".$build."\nDate: ".date("Y-m-dTH:i:s"));
 	}
