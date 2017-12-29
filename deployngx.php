@@ -1,8 +1,4 @@
 <?
-	require_once __DIR__.'/ansi-to-html/vendor/autoload.php';
-
-	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
-
 	//Disables Nginx's gzip/buffering and allows for output streaming
 	header('X-Accel-Buffering: no');
 	error_reporting(E_ALL);
@@ -10,6 +6,9 @@
 	ini_set('output_buffering', 'off');
 	ini_set('implicit_flush', true);
 	date_default_timezone_set('America/Toronto');
+
+	require_once __DIR__.'/ansi-to-html/vendor/autoload.php';
+	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 	$pid = @file_get_contents("process.pid");
 	if($pid)
@@ -45,15 +44,11 @@
 		            'cd ../ && git status 2>&1',
 		            'cd ../frontend && npm install 2>&1'];
 
-		            $commands = [];
-
-	/*if($is_development || $is_staging) {
-	  $commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
-	  $commands[] = 'cd ../backend/command && php init.php 2>&1';
-	}*/
+	$commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
+	$commands[] = 'cd ../backend/command && php init.php 2>&1';
 
 	$commands = array_merge($commands,
-	                      [  'cd ../frontend && ng build'.($env ? ' --env='.$env : ''),
+	                      [  'cd ../frontend && ng build'.($env ? ' --env='.$env : '').' 2>&1',
 	                         'chown -R nginx:nginx ../frontend/dist']);
 ?>
 <!DOCTYPE HTML>
@@ -116,6 +111,14 @@
 						@ob_flush();
 						flush();
 	              }
+
+	              while($s=fgets($pipes[1])) {
+						$converter = new AnsiToHtmlConverter();
+						echo '<div style="color:red">'.$converter->convert($s).'</div>';
+						$arr = proc_get_status($process);
+						@ob_flush();
+						flush();
+	              }
 	          }
 
 	          echo "</pre>";
@@ -130,8 +133,8 @@
 	<? } ?>
 	</div>
 
-	<h1 id="done-success" class="done dn"><?=ucwords($env)?> Build Complete!</h1>
-	<div id="done-error" class="done dn">
+	<h1 id="done-success"><?=ucwords($env)?> Build Complete!</h1>
+	<!-- <div id="done-error" class="done dn">
 	  <h1>Error in <?=ucwords($env)?> Build!</h1>
 	</div>
 
@@ -141,7 +144,7 @@
 	      $("#done-error").show();
 	  else
 	      $("#done-success").show();
-	</script>
+	</script> -->
 
 
 	</body>
