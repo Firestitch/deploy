@@ -1,4 +1,8 @@
 <?
+	require_once __DIR__.'/ansi-to-html/vendor/autoload.php';
+
+	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
+
 	//Disables Nginx's gzip/buffering and allows for output streaming
 	header('X-Accel-Buffering: no');
 	error_reporting(E_ALL);
@@ -31,15 +35,17 @@
 		$branch = shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
 
 	$commands = [ 'echo $PWD',
-	            'echo $PATH',
-	            'cd ../ && git fetch --all 2>&1',
-	            'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
-	            'cd ../ && git pull 2>&1',
-	            'cd ../ && git submodule foreach --recursive git reset --hard 2>&1',
-	            'cd ../ && git submodule update --init 2>&1',
-	            'cd ../ && git submodule update --init --remote --merge deploy 2>&1',
-	            'cd ../ && git status 2>&1',
-	            'cd ../frontend && npm install 2>&1'];
+		            'echo $PATH',
+		            'cd ../ && git fetch --all 2>&1',
+		            'cd ../ && git reset --hard origin/'.$branch.' 2>&1',
+		            'cd ../ && git pull 2>&1',
+		            'cd ../ && git submodule foreach --recursive git reset --hard 2>&1',
+		            'cd ../ && git submodule update --init 2>&1',
+		            'cd ../ && git submodule update --init --remote --merge deploy 2>&1',
+		            'cd ../ && git status 2>&1',
+		            'cd ../frontend && npm install 2>&1'];
+
+		            $commands = [];
 
 	/*if($is_development || $is_staging) {
 	  $commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
@@ -104,10 +110,11 @@
 
 	          if (is_resource($process)) {
 	              while($s=fgets($pipes[1])) {
-	                  print htmlentities(preg_replace("/\[\d+m/",'',$s));
-	                  $arr = proc_get_status($process);
-	                  @ob_flush();
-	                  flush();
+						$converter = new AnsiToHtmlConverter();
+						echo $converter->convert($s);
+						$arr = proc_get_status($process);
+						@ob_flush();
+						flush();
 	              }
 	          }
 
