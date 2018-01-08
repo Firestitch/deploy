@@ -43,7 +43,7 @@
 		            'cd ../ && git submodule update --init --remote --merge deploy 2>&1',
 		            'cd ../ && git status 2>&1',
 		            'cd ../backend/command && php upgrade.php 2>&1',
-		            'cd ../backend/command && php init.php 2>&1'
+		            'cd ../backend/command && php init.php 2>&1',
 		            'cd ../frontend && npm install 2>&1'];
 
 	$commands = array_merge($commands,
