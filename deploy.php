@@ -8,7 +8,7 @@
 
 	if($output=="zip") {
 
-		COMMANDER::create()->zip(__DIR__,["ignore"=>"/^\.git/"]);
+		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/dist",["ignore"=>"/^\.git/"]);
 
 	} else {
 		if(!$branch)
