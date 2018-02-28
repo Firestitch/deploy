@@ -1,7 +1,7 @@
 <?
 	require("__autoload.inc");
 
-	$environment	= value($_GET,"environment","development");
+	$environment	= value($_GET,"environment","dev");
 	$branch 		= value($_GET,"branch");
 	$output 		= value($_GET,"output");
 
