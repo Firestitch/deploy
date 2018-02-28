@@ -7,25 +7,28 @@
 	ini_set('implicit_flush', true);
 	date_default_timezone_set('America/Toronto');
 
+	require_once __DIR__.'/ansi-to-html/vendor/autoload.php';
+	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
+
 	$pid = @file_get_contents("process.pid");
 	if($pid)
 	      exec("kill ".$pid);
 
 	@unlink("process.pid");
 	@mkdir("deploys");
-	$build = @$_GET["build"] ? $_GET["build"] : (@$argv[1] ? $argv[1] : "development");
+	$env 	= @$_GET["env"] ? $_GET["env"] : (@$argv[1] ? $argv[1] : "dev");
 	$branch = @$_GET["branch"] ? $_GET["branch"] : (@$argv[2] ? $argv[2] : "master");
 
 	if(!@$argv && @file_get_contents("php://input")) {
 		$cmd = "php deployngx.php ".$build." > deploys/".date("Y-m-d\TH:i:s")." 2>&1 & echo $!";
 		$pid = shell_exec($cmd);
-		die("Process: ".$pid."\nBuild: ".$build."\nDate: ".date("Y-m-dTH:i:s"));
+		die("Process: ".$pid."\nEnvironment: ".$env."\nDate: ".date("Y-m-dTH:i:s"));
 	}
 
 	file_put_contents("process.pid",getmypid());
 
-	$is_development = $build=='development';
-	$is_staging     = $build=='staging';
+	$is_development = $env=='development';
+	$is_staging     = $env=='staging';
 
 	if(!$branch)
 		$branch = shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
@@ -39,15 +42,12 @@
 	            'cd ../ && git submodule update --init 2>&1',
 	            'cd ../ && git submodule update --init --remote --merge deploy 2>&1',
 	            'cd ../ && git status 2>&1',
+		            'cd ../backend/command && php upgrade.php 2>&1',
+		            'cd ../backend/command && php init.php 2>&1',
 	            'cd ../frontend && npm install 2>&1'];
 
-	/*if($is_development || $is_staging) {
-	  $commands[] = 'cd ../backend/command && php upgrade.php 2>&1';
-	  $commands[] = 'cd ../backend/command && php init.php 2>&1';
-	}*/
-
 	$commands = array_merge($commands,
-	                      [  'cd ../frontend && ng build',
+	                      [  'cd ../frontend && ng build'.($env ? ' --env='.$env : '').' 2>&1',
 	                         'chown -R nginx:nginx ../frontend/dist']);
 ?>
 <!DOCTYPE HTML>
@@ -69,7 +69,7 @@
 	  }
 	</style>
 
-	<h1>Building <?=ucwords($build)?></h1>
+	<h1>Building <?=ucwords($env)?></h1>
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script>
 	  var down = function() {
@@ -104,11 +104,20 @@
 
 	          if (is_resource($process)) {
 	              while($s=fgets($pipes[1])) {
-	                  print htmlentities(preg_replace("/\[\d+m/",'',$s));
+						$converter = new AnsiToHtmlConverter();
+						echo $converter->convert($s);
 	                  $arr = proc_get_status($process);
 	                  @ob_flush();
 	                  flush();
 	              }
+
+	              while($s=fgets($pipes[1])) {
+						$converter = new AnsiToHtmlConverter();
+						echo '<div style="color:red">'.$converter->convert($s).'</div>';
+						$arr = proc_get_status($process);
+						@ob_flush();
+						flush();
+	          }
 	          }
 
 	          echo "</pre>";
@@ -123,10 +132,9 @@
 	<? } ?>
 	</div>
 
-	<h1 id="done-success" class="done dn"><?=ucwords($build)?> Build Complete!</h1>
-	<div id="done-error" class="done dn">
-	  <h1>Error in <?=ucwords($build)?> Build!</h1>
-	  <a href="<?=$_SERVER["REQUEST_URI"]?>?resolve=true">Auto resolve with NPM and Bower update</a>
+	<h1 id="done-success"><?=ucwords($env)?> Build Complete!</h1>
+	<!-- <div id="done-error" class="done dn">
+	  <h1>Error in <?=ucwords($env)?> Build!</h1>
 	</div>
 
 	<script>
@@ -135,7 +143,7 @@
 	      $("#done-error").show();
 	  else
 	      $("#done-success").show();
-	</script>
+	</script> -->
 
 
 	</body>
