@@ -24,6 +24,7 @@
 			ini_set('output_buffering', 'off');
 			ini_set('implicit_flush', true);
 			date_default_timezone_set('America/Toronto');
+			ini_set('max_execution_time', 300);
 
 			$title = value($options,"title","Building");
 
