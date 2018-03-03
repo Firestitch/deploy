@@ -72,14 +72,15 @@
 		            while($output=fgets($pipes[1])) {
 						echo $converter->convert($output);
 
-		                do {
-		                	$arr = proc_get_status($process);
+		                // do {
+		                // 	$arr = proc_get_status($process);
 
-		                	if($arr["exitcode"]>0) {
-		                		echo "<script>error('".$guid."')</script>";
-		                	}
+		                // 	if($arr["exitcode"]>0) {
+		                // 		echo "<script>error('".$guid."')</script>";
+		                // 	}
 
-		                } while($arr["running"]);
+		                // } while($arr["running"]);
+
 		                @ob_flush();
 		                flush();
 		            }
