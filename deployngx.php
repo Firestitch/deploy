@@ -15,7 +15,7 @@
 			$branch = shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
 
 		$commands = [ 	is_os_windows() ? "cd" : "echo \$PWD",
-			            is_os_windows() ? "echo %PATH%" : "echo \$PWD",
+			            is_os_windows() ? "echo %PATH%" : "echo \$PATH",
 			            "cd ../ && git fetch --all",
 			            "cd ../ && git reset --hard origin/".$branch,
 			            "cd ../ && git pull",
