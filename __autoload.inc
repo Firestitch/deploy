@@ -2,7 +2,7 @@
 	require("commander/commander.inc");
 
 	function value($arry,$index,$default=null) {
-		return isset($arry[$index]) && $arry[$index] ? $arry[$index] : $default;
+		return array_key_exists($index,$arry) ? $arry[$index] : $default;
 	}
 
 	function p($value) {

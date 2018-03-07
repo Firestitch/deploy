@@ -8,9 +8,10 @@
 			return new COMMANDER();
 		}
 
-		function run($commands,$options=["title"=>"","capture"=>true]) {
+		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$capture = value($options,"capture",true);
+			$capture 	= value($options,"capture",true);
+			$output 	= value($options,"output",true);
 
 			foreach($commands as &$command)
 				$command .= " 2>&1";
@@ -26,6 +27,11 @@
 			date_default_timezone_set('America/Toronto');
 			ini_set('max_execution_time', 300);
 
+			if(!$output)
+				ob_start(function() {
+
+				});
+
 			$title = value($options,"title","Building");
 
 			if($pid=@file_get_contents("process.pid"))
@@ -34,11 +40,17 @@
 			file_put_contents("process.pid",getmypid());
 			include("commander.template.php");
 			@unlink("process.pid");
+
+			if(!$output)
+				ob_end_clean();
 		}
 
 		function zip($dir,$options=[]) {
 
 			$dir = rtrim(str_replace("\\","/",$dir),"\\")."/";
+
+			if(!is_dir($dir))
+				throw new Exception("Directory does not exist");
 
 			$zip_file = sys_get_temp_dir()."/".value($_SERVER,"HTTP_HOST").".zip";
 			@unlink($zip_file);
@@ -77,6 +89,7 @@
 				@readfile($zip_file);
 				@unlink($zip_file);
 				die;
+
 			} else {
 			    die($zip->getStatusString());
 			}
