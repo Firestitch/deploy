@@ -48,61 +48,61 @@
 		<h1><?=$title?></h1>
 
 		<div class="output">
-		<? foreach($commands as $command) { ?>
+			<? foreach($commands as $command) { ?>
 
-	        <span class="prompt">$</span> <span class="command"><?=$command?></span>
+		        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-	        <? flush() ?>
+		        <? flush() ?>
 
-	        <?
-				$descriptorspec = array(
-					0 => array("pipe", "r"),   // stdin is a pipe that the child will read from
-					1 => array("pipe", "w"),   // stdout is a pipe that the child will write to
-					2 => array("pipe", "w")    // stderr is a pipe that the child will write to
-				);
+		        <?
+					$descriptorspec = array(
+						0 => array("pipe", "r"),   // stdin is a pipe that the child will read from
+						1 => array("pipe", "w"),   // stdout is a pipe that the child will write to
+						2 => array("pipe", "w")    // stderr is a pipe that the child will write to
+					);
 
-				flush();
-				$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
-				@fclose($pipes[0]);
+					flush();
+					$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
+					@fclose($pipes[0]);
 
-				echo "<pre>";
+					echo "<pre>";
 
-	          	if (is_resource($process)) {
+		          	if (is_resource($process)) {
 
-	          		$guid = uniqid();
-	          		echo '<span id="'.$guid.'">';
-		            while($string=fgets($pipes[1])) {
-						echo trim($converter->convert($string));
+		          		$guid = uniqid();
+		          		echo '<span id="'.$guid.'">';
+			            while($string=fgets($pipes[1])) {
+							echo trim($converter->convert($string));
 
-		                // do {
-		                // 	$arr = proc_get_status($process);
+			                // do {
+			                // 	$arr = proc_get_status($process);
 
-		                // 	if($arr["exitcode"]>0) {
-		                // 		echo "<script>error('".$guid."')</script>";
-		                // 	}
+			                // 	if($arr["exitcode"]>0) {
+			                // 		echo "<script>error('".$guid."')</script>";
+			                // 	}
 
-		                // } while($arr["running"]);
+			                // } while($arr["running"]);
 
-		                flush();
-		            }
+			                flush();
+			            }
 
-		            echo '</span>';
+			            echo '</span>';
 
-		         	while($error=fgets($pipes[2])) {
-						echo '<div class="error">'.trim($error).'</div><script>error()</script>';
-						flush();
-		         	}
-		        }
+			         	while($error=fgets($pipes[2])) {
+							echo '<div class="error">'.trim($error).'</div><script>error()</script>';
+							flush();
+			         	}
+			        }
 
-	          	echo "</pre>";
+		          	echo "</pre>";
 
-	        	@fclose($pipes[1]);
-	         	@fclose($pipes[2]);
-	          	proc_close($process);
-	        ?>
+		        	@fclose($pipes[1]);
+		         	@fclose($pipes[2]);
+		          	proc_close($process);
+		        ?>
 
-	        <? flush() ?>
-		<? } ?>
+		        <? flush() ?>
+			<? } ?>
 		</div>
 
 		<h1 id="success" class="success dn">Build Complete</h1>
