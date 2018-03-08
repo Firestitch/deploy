@@ -39,7 +39,7 @@
 			@unlink("process.pid");
 
 			if(!$output)
-				ob_end_clean();
+				@ob_end_clean();
 		}
 
 		function zip($dir,$options=[]) {

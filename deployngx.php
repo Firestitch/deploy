@@ -21,8 +21,8 @@
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
-		            "cd ../frontend && ng build".($environment ? " --env=".$environment : "")."",
-	                "chown -R nginx:nginx ../frontend/dist" ];
+		            "cd ../frontend && ng build".($environment ? " --env=".$environment : ""),
+	                "cd ../frontend/dist && chown -R nginx:nginx" ];
 
 	if(preg_match("/build/",$action))
 		COMMANDER::create()->build($commands,["title"=>$title,"output"=>$output]);

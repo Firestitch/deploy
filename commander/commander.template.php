@@ -52,7 +52,6 @@
 
 	        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-	        <? @ob_flush() ?>
 	        <? flush() ?>
 
 	        <?
@@ -84,7 +83,6 @@
 
 		                // } while($arr["running"]);
 
-		                @ob_flush();
 		                flush();
 		            }
 
@@ -92,7 +90,6 @@
 
 		         	while($output=fgets($pipes[2])) {
 						echo '<div class="error">'.trim($output).'</div><script>error()</script>';
-						@ob_flush();
 						flush();
 		         	}
 		        }
@@ -104,7 +101,6 @@
 	          	proc_close($process);
 	        ?>
 
-	        <? @ob_flush() ?>
 	        <? flush() ?>
 		<? } ?>
 		</div>
