@@ -15,7 +15,7 @@
 			$title 		= value($options,"title","Building");
 
 			foreach($commands as $index=>$command)
-				$commands[$index] = " 2>&1";
+				$commands[$index] .= " 2>&1";
 
 			$converter = new AnsiToHtmlConverter();
 
