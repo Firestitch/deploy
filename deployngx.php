@@ -16,6 +16,7 @@
 		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master",
 		            "cd ../ && git submodule update --init",
 		            "cd ../deploy && git reset --hard origin/master",
+		            "cd ../deploy && git pull origin master",
 		            "cd ../ && git status",
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
