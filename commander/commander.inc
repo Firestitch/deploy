@@ -12,14 +12,14 @@
 
 			$capture 	= value($options,"capture",true);
 			$output 	= value($options,"output",true);
+			$title 		= value($options,"title","Building");
 
 			foreach($commands as &$command)
 				$command .= " 2>&1";
 
 			$converter = new AnsiToHtmlConverter();
 
-			//Disables Nginx's gzip/buffering and allows for output streaming
-			header('X-Accel-Buffering: no');
+			header('X-Accel-Buffering: no'); //Disables Nginx's gzip/buffering and allows for output streaming
 			error_reporting(E_ALL);
 			ini_set('display_errors', 1);
 			ini_set('output_buffering', 'off');
@@ -28,17 +28,14 @@
 			ini_set('max_execution_time', 300);
 
 			if(!$output)
-				ob_start(function() {
-
-				});
-
-			$title = value($options,"title","Building");
+				ob_start(function() {});
 
 			if($pid=@file_get_contents("process.pid"))
 			    exec("kill ".$pid);
-
 			file_put_contents("process.pid",getmypid());
-			include("commander.template.php");
+
+			require_once("commander.template.php");
+
 			@unlink("process.pid");
 
 			if(!$output)

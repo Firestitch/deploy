@@ -62,6 +62,7 @@
 
 				flush();
 				$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
+				@fclose($pipes[0]);
 
 				echo "<pre>";
 
@@ -95,7 +96,7 @@
 		        }
 
 	          	echo "</pre>";
-	          	@fclose($pipes[0]);
+
 	        	@fclose($pipes[1]);
 	         	@fclose($pipes[2]);
 	          	proc_close($process);
