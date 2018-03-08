@@ -14,8 +14,8 @@
 			$output 	= value($options,"output",true);
 			$title 		= value($options,"title","Building");
 
-			foreach($commands as &$command)
-				$command .= " 2>&1";
+			foreach($commands as $index=>$command)
+				$commands[$index] = " 2>&1";
 
 			$converter = new AnsiToHtmlConverter();
 
@@ -31,7 +31,7 @@
 				ob_start(function() {});
 
 			if($pid=@file_get_contents("process.pid"))
-			    exec("kill ".$pid);
+			    exec("kill ".$pid); //pkill -TERM -P `PID`
 			file_put_contents("process.pid",getmypid());
 
 			require_once("commander.template.php");

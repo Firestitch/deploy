@@ -2,29 +2,6 @@
 <html lang="en-US">
 	<head>
 	    <meta charset="UTF-8">
-	</head>
-	<body error="false">
-
-		<style>
-		  .dn { display: none; }
-		  body { background-color: #000000; color: #FFFFFF; font-weight: bold; padding: 0 10px; font-family: monospace; }
-
-		  .error { color: red; }
-		  .error * { color: red !important; }
-		  .success { color: green; }
-		  a, a:hover, a:link {
-		      color: #1863C8;
-		      text-decoration: none;
-		  }
-		  .command {
-		  	color: #729FCF;
-		  }
-		  .prompt {
-		  	color: #6BE234;
-		  }
-		</style>
-
-		<h1><?=$title?></h1>
 		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script>
 		  var down = function() {
@@ -44,9 +21,34 @@
 		  	}
 		  }
 		</script>
+		<style>
+		  .dn { display: none; }
+		  body { background-color: #000000; color: #FFFFFF; font-weight: bold; padding: 0 10px; font-family: monospace; }
+
+		  .error { color: red; }
+		  .error * { color: red !important; }
+		  .success { color: green; }
+		  a, a:hover, a:link {
+		      color: #1863C8;
+		      text-decoration: none;
+		  }
+		  .command {
+		  	color: #729FCF;
+		  }
+		  .prompt {
+		  	color: #6BE234;
+		  }
+
+		  pre {
+		  	margin: 2px 0 25px 0;
+		  }
+		</style>
+	</head>
+	<body error="false">
+		<h1><?=$title?></h1>
 
 		<div class="output">
-		<? foreach($commands AS $command) { ?>
+		<? foreach($commands as $command) { ?>
 
 	        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
@@ -71,7 +73,7 @@
 	          		$guid = uniqid();
 	          		echo '<span id="'.$guid.'">';
 		            while($output=fgets($pipes[1])) {
-						echo $converter->convert($output);
+						echo trim($converter->convert($output));
 
 		                // do {
 		                // 	$arr = proc_get_status($process);
@@ -89,7 +91,7 @@
 		            echo '</span>';
 
 		         	while($output=fgets($pipes[2])) {
-						echo '<div class="error">'.$output.'</div><script>error()</script>';
+						echo '<div class="error">'.trim($output).'</div><script>error()</script>';
 						@ob_flush();
 						flush();
 		         	}
