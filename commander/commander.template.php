@@ -71,8 +71,8 @@
 
 	          		$guid = uniqid();
 	          		echo '<span id="'.$guid.'">';
-		            while($output=fgets($pipes[1])) {
-						echo trim($converter->convert($output));
+		            while($string=fgets($pipes[1])) {
+						echo trim($converter->convert($string));
 
 		                // do {
 		                // 	$arr = proc_get_status($process);
@@ -88,8 +88,8 @@
 
 		            echo '</span>';
 
-		         	while($output=fgets($pipes[2])) {
-						echo '<div class="error">'.trim($output).'</div><script>error()</script>';
+		         	while($error=fgets($pipes[2])) {
+						echo '<div class="error">'.trim($error).'</div><script>error()</script>';
 						flush();
 		         	}
 		        }
