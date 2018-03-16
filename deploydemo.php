@@ -18,7 +18,8 @@
 		            "cd ../ && git reset --hard origin/master",
 		            "cd ../ && git pull",
 		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master",
-		            "cd ../ && git submodule update --remote --init",                    "cd ../".$repo." && npm install",
+		            "cd ../ && git submodule update --recursive --remote --init",
+                    "cd ../".$repo." && npm install",
                     "cd ../".$repo." && npm run demo:build",
                 	"chown -R nginx:nginx ../frontend/dist"];
 
