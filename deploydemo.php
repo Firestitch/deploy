@@ -7,7 +7,7 @@
         $repo = $payload->repository->name;
     }
 
-    $repo = preg_replace("/fs-/","",$repo);
+    $repo = preg_replace("/(fs-|-)/","",$repo);
 
     if(!$repo)
     	die("Failed to get repository name");
