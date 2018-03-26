@@ -21,7 +21,7 @@
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
-		            "cd ../frontend && ng build".($environment ? " --env=".$environment : "")."",
+		            "cd ../frontend && ng build".($environment ? " --env=".$environment : "")." --aot",
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
 	if(preg_match("/build/",$action))
