@@ -4,6 +4,8 @@
 
 	class COMMANDER {
 
+		protected $_buffer = "";
+
 		static function create() {
 			return new COMMANDER();
 		}
@@ -27,19 +29,35 @@
 			date_default_timezone_set('America/Toronto');
 			ini_set('max_execution_time', 300);
 
-			if(!$output)
-				ob_start(function() {});
+			$buffer = "";
+			if($output)
+				$this->start();
+			else
+				ob_start(function($buffer) {});
 
 			if($pid=@file_get_contents("process.pid"))
 			    exec("kill ".$pid); //pkill -TERM -P `PID`
+
 			file_put_contents("process.pid",getmypid());
 
 			require_once("commander.template.php");
+			@ob_end_flush();
 
-			if(!$output)
-				@ob_end_clean();
+			p($buffer);
 
 			@unlink("process.pid");
+		}
+
+		function start() {
+			ob_start(function($buffer) {});
+				$this->_buffer .= $buffer;
+				return $buffer;
+			});
+		}
+
+		function flush() {
+			ob_end_flush();
+			$this->start();
 		}
 
 		function zip($dir,$options=[]) {

@@ -52,7 +52,7 @@
 
 		        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-		        <? flush() ?>
+		        <? $this->flush() ?>
 
 		        <?
 					$descriptorspec = array(
@@ -61,7 +61,7 @@
 						2 => array("pipe", "w")    // stderr is a pipe that the child will write to
 					);
 
-					flush();
+					$this->flush();
 					$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
 					@fclose($pipes[0]);
 
@@ -83,14 +83,14 @@
 
 			                // } while($arr["running"]);
 
-			                flush();
+			                $this->flush();
 			            }
 
 			            echo '</span>';
 
 			         	while($error=fgets($pipes[2])) {
 							echo '<div class="error">'.trim($error).'</div><script>error()</script>';
-							flush();
+							$this->flush();
 			         	}
 			        }
 
@@ -101,7 +101,7 @@
 		          	proc_close($process);
 		        ?>
 
-		        <? flush() ?>
+		        <? $this->flush() ?>
 			<? } ?>
 		</div>
 
