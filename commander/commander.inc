@@ -31,7 +31,6 @@
 			date_default_timezone_set('America/Toronto');
 			ini_set('max_execution_time', 300);
 
-			$buffer = "";
 			if($output)
 				$this->start();
 			else
@@ -45,16 +44,15 @@
 			require_once("commander.template.php");
 			@ob_end_flush();
 
+			if($this->_output_file && !is_file($this->_output_file))
+				file_put_contents($this->_output_file,$this->_output_buffer);
+
 			@unlink("process.pid");
 		}
 
 		function start() {
 			ob_start(function($buffer) {
 				$this->_output_buffer .= $buffer;
-				if($this->_output_file) {
-					mkdir(dirname($this->_output_file),0777,true);
-					file_put_contents($this->_output_file,$this->_output_buffer);
-				}
 				return $buffer;
 			});
 		}
