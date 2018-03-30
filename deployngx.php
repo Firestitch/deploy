@@ -7,6 +7,7 @@
 	$output			= $action=="build";
 	$title			= "Building ".ucwords($environment);
 	$branch 		= $branch ? $branch : shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
+	$output_file 	= dirname(__DIR__)."/frontend/dist/index.html";
 
 	$commands = [ 	is_os_windows() ? "cd" : "echo \$PWD",
 		            is_os_windows() ? "echo %PATH%" : "echo \$PATH",
@@ -25,7 +26,7 @@
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
 	if(preg_match("/build/",$action))
-		COMMANDER::create()->build($commands,["title"=>$title,"output"=>$output]);
+		COMMANDER::create()->build($commands,["title"=>$title,"output"=>$output,"output_file"=>$output_file]);
 
 	if(preg_match("/zip/",$action))
 		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/dist",["ignore"=>"/^\.git/"]);

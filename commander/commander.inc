@@ -4,7 +4,8 @@
 
 	class COMMANDER {
 
-		protected $_buffer = "";
+		protected $_output_file = "";
+		protected $_output_buffer = "";
 
 		static function create() {
 			return new COMMANDER();
@@ -12,9 +13,10 @@
 
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$capture 	= value($options,"capture",true);
-			$output 	= value($options,"output",true);
-			$title 		= value($options,"title","Building");
+			$capture 			= value($options,"capture",true);
+			$output 			= value($options,"output",true);
+			$title 				= value($options,"title","Building");
+			$this->_output_file = value($options,"output_file");
 
 			foreach($commands as $index=>$command)
 				$commands[$index] .= " 2>&1";
@@ -43,15 +45,16 @@
 			require_once("commander.template.php");
 			@ob_end_flush();
 
-			p("XXXXXXXXXXXXXXXXX");
-			p($this->_buffer);
-
 			@unlink("process.pid");
 		}
 
 		function start() {
 			ob_start(function($buffer) {
-				$this->_buffer .= $buffer;
+				$this->_output_buffer .= $buffer;
+				if($this->_output_file) {
+					mkdir(dirname($this->_output_file),0777,true);
+					file_put_contents($this->_output_file,$this->_output_buffer);
+				}
 				return $buffer;
 			});
 		}
