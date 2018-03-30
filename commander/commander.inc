@@ -43,13 +43,14 @@
 			require_once("commander.template.php");
 			@ob_end_flush();
 
-			p($buffer);
+			p("XXXXXXXXXXXXXXXXX");
+			p($this->_buffer);
 
 			@unlink("process.pid");
 		}
 
 		function start() {
-			ob_start(function($buffer) {});
+			ob_start(function($buffer) {
 				$this->_buffer .= $buffer;
 				return $buffer;
 			});
