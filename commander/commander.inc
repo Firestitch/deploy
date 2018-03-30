@@ -31,6 +31,9 @@
 			date_default_timezone_set('America/Toronto');
 			ini_set('max_execution_time', 300);
 
+			if($this->_output_file)
+				unlink($this->_output_file);
+
 			if($output)
 				$this->start();
 			else
