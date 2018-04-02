@@ -4,8 +4,9 @@
 
 	class COMMANDER {
 
-		protected $_output_file = "";
-		protected $_output_buffer = "";
+		protected $_output_file 	= "";
+		protected $_output_buffer 	= "";
+		protected $_output 			= true;
 
 		static function create() {
 			return new COMMANDER();
@@ -13,9 +14,8 @@
 
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$capture 			= value($options,"capture",true);
-			$output 			= value($options,"output",true);
 			$title 				= value($options,"title","Building");
+			$this->_output 		= value($options,"output",true);
 			$this->_output_file = value($options,"output_file");
 
 			foreach($commands as $index=>$command)
@@ -32,12 +32,9 @@
 			ini_set('max_execution_time', 300);
 
 			if($this->_output_file)
-				unlink($this->_output_file);
+				@unlink($this->_output_file);
 
-			if($output)
-				$this->start();
-			else
-				ob_start(function($buffer) {});
+			$this->start();
 
 			if($pid=@file_get_contents("process.pid"))
 			    exec("kill ".$pid); //pkill -TERM -P `PID`
@@ -56,12 +53,12 @@
 		function start() {
 			ob_start(function($buffer) {
 				$this->_output_buffer .= $buffer;
-				return $buffer;
+				return $this->_output ? $buffer : '';
 			});
 		}
 
 		function flush() {
-			ob_end_flush();
+			@ob_end_flush();
 			$this->start();
 		}
 
