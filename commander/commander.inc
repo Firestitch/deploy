@@ -44,8 +44,10 @@
 			require_once("commander.template.php");
 			@ob_end_flush();
 
-			if($this->_output_file && !is_file($this->_output_file))
-				file_put_contents($this->_output_file,$this->_output_buffer);
+			if($this->_output_file && !is_file($this->_output_file)) {
+				@mkdir(dirname($this->_output_file),0777,true);
+				@file_put_contents($this->_output_file,$this->_output_buffer);
+			}
 
 			@unlink("process.pid");
 		}
