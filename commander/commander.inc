@@ -36,10 +36,10 @@
 
 			$this->start();
 
-			if($pid=@file_get_contents("process.pid"))
-			    exec("kill ".$pid); //pkill -TERM -P `PID`
+			//if($pid=@file_get_contents("process.pid"))
+			//    exec("kill ".$pid); //pkill -TERM -P `PID`
 
-			file_put_contents("process.pid",getmypid());
+			//file_put_contents("process.pid",getmypid());
 
 			require_once("commander.template.php");
 			@ob_end_flush();
@@ -49,7 +49,7 @@
 				@file_put_contents($this->_output_file,$this->_output_buffer);
 			}
 
-			@unlink("process.pid");
+			//@unlink("process.pid");
 		}
 
 		function start() {
