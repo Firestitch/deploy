@@ -4,6 +4,7 @@
 	$environment	= value($_GET,"environment","dev");
 	$branch 		= value($_GET,"branch");
 	$action			= value($_GET,"action","build");
+	$aot			= value($_GET,"aot","true")==="true";
 	$output			= $action=="build";
 	$title			= "Building ".ucwords($environment);
 	$branch 		= $branch ? $branch : shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
@@ -22,7 +23,7 @@
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
-		            "cd ../frontend && ng build".($environment ? " --env=".$environment : "")." --aot",
+		            "cd ../frontend && ng build".($environment ? " --env=".$environment : "")." ".($aot ? "--aot" : ""),
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
 	if(preg_match("/build/",$action))
