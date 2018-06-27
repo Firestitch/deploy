@@ -16,6 +16,8 @@
 
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
+			$this->log("BUILD-START");
+
 			$this->_options		= $options;
 			$title 				= $this->get_option("title","Building");
 			$this->_output 		= $this->get_option("output",true);
@@ -52,7 +54,7 @@
 				@file_put_contents($this->_output_file,$this->_output_buffer);
 			}
 
-			$this->log("end");
+			$this->log("BUILD-END");
 
 			//@unlink(self::PROCESS_FILENAME);
 		}
@@ -61,7 +63,6 @@
 
 
 		function start() {
-			$this->log("start");
 			ob_start(function($buffer) {
 				$this->_output_buffer .= $buffer;
 				return $this->_output ? $buffer : '';
