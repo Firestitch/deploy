@@ -16,12 +16,12 @@
 
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$this->log("BUILD-START");
-
 			$this->_options		= $options;
 			$title 				= $this->get_option("title","Building");
 			$this->_output 		= $this->get_option("output",true);
 			$this->_output_file = $this->get_option("output_file");
+
+			$this->log("BUILD-START");
 
 			foreach($commands as $index=>$command)
 				$commands[$index] .= " 2>&1";
