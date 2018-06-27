@@ -78,8 +78,9 @@
 
 			$log = [];
 			$log[] = date("M j G:i:s");
+			$log[] = value($_SERVER,"HTTP_HOST");
 			$log[] = "\"".$this->get_option("title")."\"";
-			$log[] = "\"".$message."\"";
+			$log[] = $message;
 
 			file_put_contents("/var/log/deploy", implode(" ",$log)."\n", FILE_APPEND);
 		}
