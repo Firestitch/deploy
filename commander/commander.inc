@@ -4,6 +4,8 @@
 
 	class COMMANDER {
 
+		const PROCESS_FILENAME = "process.pid";
+
 		protected $_output_file 	= "";
 		protected $_output_buffer 	= "";
 		protected $_output 			= true;
@@ -14,9 +16,10 @@
 
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$title 				= value($options,"title","Building");
-			$this->_output 		= value($options,"output",true);
-			$this->_output_file = value($options,"output_file");
+			$this->_options		= $options;
+			$title 				= $this->get_option("title","Building");
+			$this->_output 		= $this->get_option("output",true);
+			$this->_output_file = $this->get_option("output_file");
 
 			foreach($commands as $index=>$command)
 				$commands[$index] .= " 2>&1";
@@ -36,10 +39,10 @@
 
 			$this->start();
 
-			//if($pid=@file_get_contents("process.pid"))
+			//if($pid=@file_get_contents(self::PROCESS_FILENAME))
 			//    exec("kill ".$pid); //pkill -TERM -P `PID`
 
-			//file_put_contents("process.pid",getmypid());
+			//file_put_contents(self::PROCESS_FILENAME,getmypid());
 
 			require_once("commander.template.php");
 			@ob_end_flush();
@@ -49,10 +52,16 @@
 				@file_put_contents($this->_output_file,$this->_output_buffer);
 			}
 
-			//@unlink("process.pid");
+			$this->log("end");
+
+			//@unlink(self::PROCESS_FILENAME);
 		}
 
+		function get_option($name,$default=null) { return value($this->_options,$name,$default); }
+
+
 		function start() {
+			$this->log("start");
 			ob_start(function($buffer) {
 				$this->_output_buffer .= $buffer;
 				return $this->_output ? $buffer : '';
@@ -62,6 +71,16 @@
 		function flush() {
 			@ob_end_flush();
 			$this->start();
+		}
+
+		function log($message) {
+
+			$log = [];
+			$log[] = date("M j G:i:s");
+			$log[] = "\"".$this->get_option("title")."\"";
+			$log[] = "\"".$message."\"";
+
+			file_put_contents("/var/log/deploy", implode(" ",$log), FILE_APPEND);
 		}
 
 		function zip($dir,$options=[]) {
