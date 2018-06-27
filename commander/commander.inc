@@ -81,7 +81,7 @@
 			$log[] = "\"".$this->get_option("title")."\"";
 			$log[] = "\"".$message."\"";
 
-			file_put_contents("/var/log/deploy", implode(" ",$log), FILE_APPEND);
+			file_put_contents("/var/log/deploy", implode(" ",$log)."\n", FILE_APPEND);
 		}
 
 		function zip($dir,$options=[]) {
