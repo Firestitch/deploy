@@ -42,7 +42,10 @@
 
 	if(preg_match("/build/",$action)) {
 		$title	= "Building ".ucwords($environment);
-		COMMANDER::create()->build($commands,["title"=>$title,"output"=>$output,"output_file"=>$output_file]);
+		COMMANDER::create()->build($commands,[	"title"=>$title,
+												"output"=>$output,
+												"output_file"=>$output_file,
+												"process_key"=>basename(dirname(__DIR__))]);
 	}
 
 	if(preg_match("/zip/",$action))

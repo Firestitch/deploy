@@ -25,4 +25,7 @@
                     "cd ../".$repo." && npm run demo:build",
                 	"chown -R nginx:nginx ../demo"];
 
-	COMMANDER::create()->build($commands,["title"=>"Building ".ucfirst($repo)." Demo","output"=>true,"output_file"=>$output_file]);
+	COMMANDER::create()->build($commands,[	"title"=>"Building ".ucfirst($repo)." Demo",
+											"output"=>true,
+											"output_file"=>$output_file,
+											"process_key"=>$repo]);

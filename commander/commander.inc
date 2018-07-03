@@ -4,8 +4,6 @@
 
 	class COMMANDER {
 
-		const PROCESS_FILENAME = "process.pid";
-
 		protected $_output_file 	= "";
 		protected $_output_buffer 	= "";
 		protected $_output 			= true;
@@ -20,6 +18,7 @@
 			$title 				= $this->get_option("title","Building");
 			$this->_output 		= $this->get_option("output",true);
 			$this->_output_file = $this->get_option("output_file");
+			$this->_process_key = $this->get_option("process_key");
 
 			$this->log("BUILD-START");
 
@@ -41,10 +40,19 @@
 
 			$this->start();
 
-			//if($pid=@file_get_contents(self::PROCESS_FILENAME))
-			//    exec("kill ".$pid); //pkill -TERM -P `PID`
+			@mkdir("processes");
+			$md5_process_key = md5($this->_process_key);
+			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
 
-			//file_put_contents(self::PROCESS_FILENAME,getmypid());
+			if($process_file) {
+				$this->log("PROCESS-KEY ".$md5_process_key);
+				if($pid=@file_get_contents($process_file)) {
+			    	$this->log("PROCESS-KILL ".$md5_process_key);
+			    	exec("pkill -TERM -P `{$pid}`");
+				}
+
+				file_put_contents($process_file,getmypid());
+			}
 
 			require_once("commander.template.php");
 			@ob_end_flush();
@@ -56,7 +64,8 @@
 
 			$this->log("BUILD-END");
 
-			//@unlink(self::PROCESS_FILENAME);
+			if($process_file)
+				@unlink($process_file);
 		}
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }
