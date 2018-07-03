@@ -46,13 +46,19 @@
 			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
 
 			if($process_file) {
-				$this->log("PROCESS-KEY ".$md5_process_key);
-				if($pid=@file_get_contents($process_file)) {
-			    	$this->log("PROCESS-KILL ".$pid);
-			    	exec("kill -TERM -- ".$pid);
+				$this->log("PROCESS-KEY ".$md5_process_key." ".$this->_process_key);
+				if($data=@file_get_contents($process_file)) {
+
+					$pid = value(@json_decode($data),"pid");
+
+			    	if($pid) {
+			    		$this->log("PROCESS-KILL ".$pid);
+			    		exec("kill -TERM -- ".$pid);
+			    	}
 				}
 
-				file_put_contents($process_file,getmypid());
+				$data = ["pid"=>getmypid(),"process_key"=>$this->_process_key];
+				file_put_contents($process_file,json_encode($data));
 			}
 
 			require_once("commander.template.php");
