@@ -7,6 +7,7 @@
 		protected $_output_file 	= "";
 		protected $_output_buffer 	= "";
 		protected $_output 			= true;
+		//protected $_pids 			= [];
 
 		static function create() {
 			return new COMMANDER();
@@ -47,8 +48,8 @@
 			if($process_file) {
 				$this->log("PROCESS-KEY ".$md5_process_key);
 				if($pid=@file_get_contents($process_file)) {
-			    	$this->log("PROCESS-KILL ".$md5_process_key);
-			    	exec("pkill -TERM -P `{$pid}`");
+			    	$this->log("PROCESS-KILL ".$pid);
+			    	exec("kill -TERM -- ".$pid);
 				}
 
 				file_put_contents($process_file,getmypid());
@@ -77,6 +78,14 @@
 				return $this->_output ? $buffer : '';
 			});
 		}
+
+		// function register_pid($pid) {
+		// 	$this->_pids[$pid] = true;
+		// }
+
+		// function unregister_pid($pid) {
+		// 	unset($this->_pids[$pid]);
+		// }
 
 		function flush() {
 			@ob_end_flush();

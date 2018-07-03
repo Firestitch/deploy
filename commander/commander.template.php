@@ -76,11 +76,19 @@
 							echo trim($converter->convert($string));
 
 			                // do {
-			                // 	$arr = proc_get_status($process);
 
-			                // 	if($arr["exitcode"]>0) {
-			                // 		echo "<script>error('".$guid."')</script>";
-			                // 	}
+			                // 	$pid = value(proc_get_status($process),"pid");
+
+			                // 	if($arr["running"])
+			                // 		$this->register_pid($pid);
+			                // 	else
+			                // 		$this->unregister_pid($pid);
+
+				               //  // 	$arr = proc_get_status($process);
+
+				               //  // 	if($arr["exitcode"]>0) {
+				               //  // 		echo "<script>error('".$guid."')</script>";
+				               //  // 	}
 
 			                // } while($arr["running"]);
 
