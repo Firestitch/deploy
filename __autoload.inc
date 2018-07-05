@@ -2,12 +2,11 @@
 	require("commander/commander.inc");
 
 	function value($arry,$index,$default=null) {
-		if(is_object($array))
-		    return property_exists($array,$index) ?	$array->$index : $default;
-		if(is_array($array))
+		if(is_object($arry))
+		    return property_exists($arry,$index) ?	$arry->$index : $default;
+		if(is_array($arry))
 		    return array_key_exists($index,$arry) ? $arry[$index] : $default;
 		return null;
-
 	}
 
 	function p($value) {
