@@ -2,9 +2,9 @@
 	require("__autoload.inc");
 
     $repo = @$_GET["repo"];
+
     if(!$repo) {
-        $payload = json_decode(value($_POST,"payload"));
-        $repo = $payload->repository->name;
+        $repo = value(COMMANDER::get_github_payload(),["repository","name"]);
         //file_put_contents("payload.json",value($_POST,"payload"));
     }
 

@@ -13,6 +13,11 @@
 			return new COMMANDER();
 		}
 
+		static function get_github_payload() {
+			$payload = @json_decode(value($_POST,"payload"));
+			return $payload ? $payload : [];
+		}
+
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
 			$this->_options		= $options;

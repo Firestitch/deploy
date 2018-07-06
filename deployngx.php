@@ -24,6 +24,14 @@
 		$build_params[] = "--environment=".$environment;
 	}
 
+	if($payload=COMMANDER::get_github_payload()) {
+		preg_match("/([^\\/]+)$/",value($payload,"ref"),$matches);
+		$github_branch = value($matches,1);
+
+		if($branch!==$github_branch)
+			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
+	}
+
 	$commands = [ 	is_os_windows() ? "cd" : "echo \$PWD",
 		            is_os_windows() ? "echo %PATH%" : "echo \$PATH",
 		            "cd ../ && git fetch --all",
