@@ -4,7 +4,7 @@
 	$branch 		= value($_GET,"branch");
 	$action			= value($_GET,"action","build");
 	$output			= $action=="build";
-	$branch 		= $branch ? $branch : shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
+	$branch 		= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
 	$output_file 	= dirname(__DIR__)."/frontend/dist/index.html";
 
 	$build_params = [];
