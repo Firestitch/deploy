@@ -39,7 +39,9 @@
 			ini_set('output_buffering', 'off');
 			ini_set('implicit_flush', true);
 			date_default_timezone_set('America/Toronto');
+			ignore_user_abort(true);
 			ini_set('max_execution_time', 300);
+			set_time_limit(300);
 
 			if($this->_output_file)
 				@unlink($this->_output_file);
