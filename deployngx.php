@@ -11,10 +11,10 @@
 	if(value($_GET,"aot","true")==="true")
 		$build_params[] = "--aot";
 
-	if(value($_GET,"prod","true")==="true")
+	if(value($_GET,"prod")==="true")
 		$build_params[] = "--prod";
 
-	if(value($_GET,"build-optimizer","true")==="true")
+	if(value($_GET,"build-optimizer")==="true")
 		$build_params[] = "--build-optimizer";
 
 	if($environment=value($_GET,"configuration"))
