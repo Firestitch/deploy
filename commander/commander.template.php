@@ -46,13 +46,14 @@
 	</head>
 	<body error="false">
 		<h1><?=$title?></h1>
+		<h2>Built on <?=date("F j, Y, g:i a")?></h2>
 
 		<div class="output">
 			<? foreach($commands as $command) { ?>
 
 		        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-		        <? flush() ?>
+		        <? $this->flush() ?>
 
 		        <?
 					$descriptorspec = array(
@@ -61,7 +62,7 @@
 						2 => array("pipe", "w")    // stderr is a pipe that the child will write to
 					);
 
-					flush();
+					$this->flush();
 					$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
 					@fclose($pipes[0]);
 
@@ -75,22 +76,30 @@
 							echo trim($converter->convert($string));
 
 			                // do {
-			                // 	$arr = proc_get_status($process);
 
-			                // 	if($arr["exitcode"]>0) {
-			                // 		echo "<script>error('".$guid."')</script>";
-			                // 	}
+			                // 	$pid = value(proc_get_status($process),"pid");
+
+			                // 	if($arr["running"])
+			                // 		$this->register_pid($pid);
+			                // 	else
+			                // 		$this->unregister_pid($pid);
+
+				               //  // 	$arr = proc_get_status($process);
+
+				               //  // 	if($arr["exitcode"]>0) {
+				               //  // 		echo "<script>error('".$guid."')</script>";
+				               //  // 	}
 
 			                // } while($arr["running"]);
 
-			                flush();
+			                $this->flush();
 			            }
 
 			            echo '</span>';
 
 			         	while($error=fgets($pipes[2])) {
 							echo '<div class="error">'.trim($error).'</div><script>error()</script>';
-							flush();
+							$this->flush();
 			         	}
 			        }
 
@@ -101,7 +110,7 @@
 		          	proc_close($process);
 		        ?>
 
-		        <? flush() ?>
+		        <? $this->flush() ?>
 			<? } ?>
 		</div>
 

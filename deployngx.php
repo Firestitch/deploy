@@ -1,12 +1,36 @@
 <?
 	require("__autoload.inc");
 
-	$environment	= value($_GET,"environment","dev");
 	$branch 		= value($_GET,"branch");
 	$action			= value($_GET,"action","build");
 	$output			= $action=="build";
-	$title			= "Building ".ucwords($environment);
-	$branch 		= $branch ? $branch : shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD");
+	$branch 		= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
+	$output_file 	= dirname(__DIR__)."/frontend/dist/index.html";
+
+	$build_params = [];
+	if(value($_GET,"aot","true")==="true")
+		$build_params[] = "--aot";
+
+	if(value($_GET,"prod")==="true")
+		$build_params[] = "--prod";
+
+	if(value($_GET,"build-optimizer")==="true")
+		$build_params[] = "--build-optimizer";
+
+	if($environment=value($_GET,"configuration"))
+		$build_params[] = "--configuration=".$environment;
+	else {
+		$environment = value($_GET,"environment","dev");
+		$build_params[] = "--environment=".$environment;
+	}
+
+	if($payload=COMMANDER::get_github_payload()) {
+		preg_match("/([^\\/]+)$/",value($payload,"ref"),$matches);
+		$github_branch = value($matches,1);
+
+		if($branch!==$github_branch)
+			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
+	}
 
 	$commands = [ 	is_os_windows() ? "cd" : "echo \$PWD",
 		            is_os_windows() ? "echo %PATH%" : "echo \$PATH",
@@ -21,11 +45,16 @@
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
-		            "cd ../frontend && ng build".($environment ? " --env=".$environment : "")." --aot",
+		            "cd ../frontend && ng build ".implode(" ",$build_params),
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
-	if(preg_match("/build/",$action))
-		COMMANDER::create()->build($commands,["title"=>$title,"output"=>$output]);
+	if(preg_match("/build/",$action)) {
+		$title	= "Building ".ucwords($environment);
+		COMMANDER::create()->build($commands,[	"title"=>$title,
+												"output"=>$output,
+												"output_file"=>$output_file,
+												"process_key"=>basename(dirname(__DIR__))]);
+	}
 
 	if(preg_match("/zip/",$action))
 		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/dist",["ignore"=>"/^\.git/"]);

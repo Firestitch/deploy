@@ -4,15 +4,29 @@
 
 	class COMMANDER {
 
+		protected $_output_file 	= "";
+		protected $_output_buffer 	= "";
+		protected $_output 			= true;
+		//protected $_pids 			= [];
+
 		static function create() {
 			return new COMMANDER();
 		}
 
+		static function get_github_payload() {
+			$payload = @json_decode(value($_POST,"payload"));
+			return $payload ? $payload : [];
+		}
+
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$capture 	= value($options,"capture",true);
-			$output 	= value($options,"output",true);
-			$title 		= value($options,"title","Building");
+			$this->_options		= $options;
+			$title 				= $this->get_option("title","Building");
+			$this->_output 		= $this->get_option("output",true);
+			$this->_output_file = $this->get_option("output_file");
+			$this->_process_key = $this->get_option("process_key");
+
+			$this->log("BUILD-START");
 
 			foreach($commands as $index=>$command)
 				$commands[$index] .= " 2>&1";
@@ -25,21 +39,81 @@
 			ini_set('output_buffering', 'off');
 			ini_set('implicit_flush', true);
 			date_default_timezone_set('America/Toronto');
+			ignore_user_abort(true);
 			ini_set('max_execution_time', 300);
+			set_time_limit(300);
 
-			if(!$output)
-				ob_start(function() {});
+			if($this->_output_file)
+				@unlink($this->_output_file);
 
-			if($pid=@file_get_contents("process.pid"))
-			    exec("kill ".$pid); //pkill -TERM -P `PID`
-			file_put_contents("process.pid",getmypid());
+			$this->start();
+
+			@mkdir("processes");
+			$md5_process_key = md5($this->_process_key);
+			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
+
+			if($process_file) {
+				$this->log("PROCESS-KEY ".$md5_process_key." ".$this->_process_key);
+				if($data=@file_get_contents($process_file)) {
+
+					$pid = value(@json_decode($data),"pid");
+
+			    	if($pid) {
+			    		$this->log("PROCESS-KILL ".$pid);
+			    		exec("kill -TERM -- ".$pid);
+			    	}
+				}
+
+				$data = ["pid"=>getmypid(),"process_key"=>$this->_process_key];
+				file_put_contents($process_file,json_encode($data));
+			}
 
 			require_once("commander.template.php");
+			@ob_end_flush();
 
-			if(!$output)
-				@ob_end_clean();
+			if($this->_output_file && !is_file($this->_output_file)) {
+				@mkdir(dirname($this->_output_file),0777,true);
+				@file_put_contents($this->_output_file,$this->_output_buffer);
+			}
 
-			@unlink("process.pid");
+			$this->log("BUILD-END");
+
+			if($process_file)
+				@unlink($process_file);
+		}
+
+		function get_option($name,$default=null) { return value($this->_options,$name,$default); }
+
+
+		function start() {
+			ob_start(function($buffer) {
+				$this->_output_buffer .= $buffer;
+				return $this->_output ? $buffer : '';
+			});
+		}
+
+		// function register_pid($pid) {
+		// 	$this->_pids[$pid] = true;
+		// }
+
+		// function unregister_pid($pid) {
+		// 	unset($this->_pids[$pid]);
+		// }
+
+		function flush() {
+			@ob_end_flush();
+			$this->start();
+		}
+
+		function log($message) {
+
+			$log = [];
+			$log[] = date("M j G:i:s");
+			$log[] = value($_SERVER,"HTTP_HOST");
+			$log[] = "\"".$this->get_option("title")."\"";
+			$log[] = $message;
+
+			file_put_contents("/var/log/deploy", implode(" ",$log)."\n", FILE_APPEND);
 		}
 
 		function zip($dir,$options=[]) {
