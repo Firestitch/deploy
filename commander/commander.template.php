@@ -46,7 +46,7 @@
 	</head>
 	<body error="false">
 		<h1><?=$title?></h1>
-		<h2>Built on <?=date("F j, Y, g:i a")?></h2>
+		<h2>Built on <?=date("F j, Y, g:i a e")?></h2>
 
 		<div class="output">
 			<? foreach($commands as $command) { ?>

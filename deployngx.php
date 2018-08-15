@@ -6,25 +6,30 @@
 	$output			= $action=="build";
 	$branch 		= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
 	$output_file 	= dirname(__DIR__)."/frontend/dist/index.html";
+	$package_file	= dirname(__DIR__)."/frontend/package.json";
+	$package_json	= @json_decode(file_get_contents($package_file));
+	$package_name	= value($package_json,"name");
 
 	$build_params = [];
-	if(value($_GET,"aot","true")==="true")
-		$build_params[] = "--aot";
+	// if(value($_GET,"aot","true")==="true")
+	// 	$build_params[] = "--aot";
 
-	if(value($_GET,"prod")==="true")
-		$build_params[] = "--prod";
+	// if(value($_GET,"prod")==="true")
+	// 	$build_params[] = "--prod";
 
-	if(value($_GET,"build-optimizer")==="true")
-		$build_params[] = "--build-optimizer";
+	// if(value($_GET,"build-optimizer")==="true")
+	// 	$build_params[] = "--build-optimizer";
 
-	if($environment=value($_GET,"configuration"))
-		$build_params[] = "--configuration=".$environment;
-	else {
-		$environment = value($_GET,"environment","dev");
-		$build_params[] = "--environment=".$environment;
-	}
+
+	$environment = value($_GET,"environment","dev");
+	$build_params[] = "--{$package_name}:env=".$environment;
+
+	if($device=value($_GET,"device"))
+		$build_params[] = "--{$package_name}:device=".$device;
+
 
 	if($payload=COMMANDER::get_github_payload()) {
+		// ref eg. refs/heads/master
 		preg_match("/([^\\/]+)$/",value($payload,"ref"),$matches);
 		$github_branch = value($matches,1);
 
@@ -45,7 +50,7 @@
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
-		            "cd ../frontend && ng build ".implode(" ",$build_params),
+		            "cd ../frontend && npm run build ".implode(" ",$build_params),
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
 	if(preg_match("/build/",$action)) {
