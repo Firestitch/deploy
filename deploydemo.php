@@ -23,8 +23,7 @@
 		            "cd ../ && git submodule update --recursive --remote --init",
 		            "cd ../".$repo." && npm rebuild node-sass",
                     "cd ../".$repo." && npm install",
-                    "cd ../".$repo." && npm run demo:build",
-                	"chown -R nginx:nginx ../demo"];
+                    "cd ../".$repo." && npm run demo:build"];
 
 	COMMANDER::create()->build($commands,[	"title"=>"Building ".ucfirst($repo)." Demo",
 											"output"=>true,
