@@ -11,15 +11,6 @@
 	$package_name	= value($package_json,"name");
 
 	$build_params = [];
-	// if(value($_GET,"aot","true")==="true")
-	// 	$build_params[] = "--aot";
-
-	// if(value($_GET,"prod")==="true")
-	// 	$build_params[] = "--prod";
-
-	// if(value($_GET,"build-optimizer")==="true")
-	// 	$build_params[] = "--build-optimizer";
-
 
 	$environment = value($_GET,"environment","dev");
 	$build_params[] = "--{$package_name}:env=".$environment;
