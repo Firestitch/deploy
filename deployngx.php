@@ -41,6 +41,7 @@
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
+		            "cd ../frontend && npm rebuild node-sass",
 		            "cd ../frontend && npm run build ".implode(" ",$build_params),
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
