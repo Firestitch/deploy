@@ -34,7 +34,7 @@
 		            "cd ../ && git reset --hard origin/".$branch,
 		            "cd ../ && git pull",
 		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master",
-		            "cd ../ && git submodule foreach update --init --recursive",
+		            "cd ../ && git submodule update --init --recursive",
 		            "cd ../deploy && git reset --hard origin/master",
 		            "cd ../deploy && git pull origin master",
 		            "cd ../ && git status",
