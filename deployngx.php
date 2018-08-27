@@ -28,8 +28,8 @@
 			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
 	}
 
-	$commands = [ 	is_os_windows() ? "cd" : "echo \$PWD",
-		            is_os_windows() ? "echo %PATH%" : "echo \$PATH",
+	$commands = [ 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
+		            "whoami",
 		            "cd ../ && git fetch --all",
 		            "cd ../ && git reset --hard origin/".$branch,
 		            "cd ../ && git pull",
@@ -37,7 +37,6 @@
 		            "cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name'",
 		            "cd ../deploy && git reset --hard origin/master",
 		            "cd ../deploy && git pull origin master",
-		            "cd ../ && git status",
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install",
