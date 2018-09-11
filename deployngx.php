@@ -3,6 +3,8 @@
 
 	$branch 		= value($_GET,"branch");
 	$action			= value($_GET,"action","build");
+	$action_build 	= preg_match("/build/",$action);
+	$action_zip	 	= preg_match("/zip/",$action);
 	$output			= $action=="build";
 	$branch 		= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
 	$output_file 	= dirname(__DIR__)."/frontend/dist/index.html";
@@ -18,6 +20,8 @@
 	if($device=value($_GET,"device"))
 		$build_params[] = "--{$package_name}:device=".$device;
 
+	if($action_zip)
+		$build_params[] = "--{$package_name}:outputpath=tmp/zip";
 
 	if($payload=COMMANDER::get_github_payload()) {
 		// ref eg. refs/heads/master
@@ -45,7 +49,7 @@
 		            "cd ../frontend && npm run build ".implode(" ",$build_params),
 	                "chown -R nginx:nginx ../frontend/dist" ];
 
-	if(preg_match("/build/",$action)) {
+	if($action_build) {
 		$title	= "Building ".ucwords($environment);
 		COMMANDER::create()->build($commands,[	"title"=>$title,
 												"output"=>$output,
@@ -53,5 +57,5 @@
 												"process_key"=>basename(dirname(__DIR__))]);
 	}
 
-	if(preg_match("/zip/",$action))
-		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/dist",["ignore"=>"/^\.git/"]);
+	if($action_zip)
+		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/tmp/zip",["ignore"=>"/^\.git/"]);
