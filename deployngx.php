@@ -11,17 +11,16 @@
 	$package_file	= dirname(__DIR__)."/frontend/package.json";
 	$package_json	= @json_decode(file_get_contents($package_file));
 	$package_name	= value($package_json,"name");
+	$output_path	= $action_zip ? "tmp/zip" : "dist";
 
 	$build_params = [];
 
 	$environment = value($_GET,"environment","dev");
 	$build_params[] = "--{$package_name}:env=".$environment;
+	$build_params[] = "--{$package_name}:outputpath=".$output_path;
 
 	if($device=value($_GET,"device"))
-		$build_params[] = "--{$package_name}:device=".$device;
-
-	if($action_zip)
-		$build_params[] = "--{$package_name}:outputpath=tmp/zip";
+		$build_params[] = "--{$package_name}:device=".$device;	
 
 	if($payload=COMMANDER::get_github_payload()) {
 		// ref eg. refs/heads/master
