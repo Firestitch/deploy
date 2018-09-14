@@ -16,8 +16,10 @@
 	$environment = value($_GET,"environment","dev");
 	$build_params[] = "--{$package_name}:env=".$environment;
 
-	if($action_zip)
-		$build_params[] = "--{$package_name}:outputpath=../tmp/zip";
+	if($action_zip) {
+		$build_params[] = "--{$package_name}:outputpath=../dist-zip";
+		$output_file 	= dirname(__DIR__)."/frontend/dist-zip/index.html";
+	}
 
 	if($device=value($_GET,"device"))
 		$build_params[] = "--{$package_name}:device=".$device;	
@@ -57,4 +59,4 @@
 	}
 
 	if($action_zip)
-		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/tmp/zip",["ignore"=>"/^\.git/"]);
+		COMMANDER::create()->zip(dirname(__DIR__)."/frontend/dist-zip",["ignore"=>"/^\.git/"]);
