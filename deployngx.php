@@ -11,7 +11,7 @@
 	$package_file	= dirname(__DIR__)."/frontend/package.json";
 	$package_json	= @json_decode(file_get_contents($package_file));
 	$package_name	= value($package_json,"name");
-	$output_path	= $action_zip ? "tmp/zip" : "dist";
+	$output_path	= $action_zip ? "../tmp/zip" : "../dist";
 
 	$build_params = [];
 
