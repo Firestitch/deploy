@@ -17,7 +17,7 @@
 	$build_params[] = "--{$package_name}:env=".$environment;
 
 	if($action_zip) {
-		$build_params[] = "--{$package_name}:outputpath=../dist-zip";
+		$build_params[] = "--{$package_name}:outputpath=dist-zip";
 		$output_file 	= dirname(__DIR__)."/frontend/dist-zip/index.html";
 	}
 
