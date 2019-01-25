@@ -60,17 +60,7 @@
 
 			    	if($pid) {
 			    		$this->log("PROCESS-KILL ".$pid);
-
-			    		$pids = [];
-			    		exec('pstree -pn '.$pid.' | grep -o "([[:digit:]]*)" | grep -o "[[:digit:]]*"',$pids);
-						p($pids);
-			    		array_reverse($pids);
-			    		p($pids);
-			    						    	
-				    	foreach($pids as $pid) {
-				    		p("kill -9 ".$pid);
-				    		exec("kill -9 ".$pid);
-				    	}
+			    		$this->kill_pid($pid);
 			    	}
 				}
 
@@ -90,6 +80,16 @@
 
 			if($process_file)
 				@unlink($process_file);
+		}
+
+		function kill_pid($root_pid) {
+    		$pids = [];
+    		exec('pstree -pn '.$root_pid.' | grep -o "([[:digit:]]*)" | grep -o "[[:digit:]]*"',$pids);
+			$pid = array_pop($pids);
+			if($pid) {
+	    		exec("kill -9 ".$pid);
+	    		$this->kill_pid($root_pid);
+	    	}
 		}
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }
