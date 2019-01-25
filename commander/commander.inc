@@ -53,14 +53,24 @@
 			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
 
 			if($process_file) {
-				$this->log("PROCESS-KEY ".$md5_process_key." ".$this->_process_key);
+				//$this->log("PROCESS-KEY ".$md5_process_key." ".$this->_process_key);
 				if($data=@file_get_contents($process_file)) {
 
 					$pid = value(@json_decode($data),"pid");
 
 			    	if($pid) {
 			    		$this->log("PROCESS-KILL ".$pid);
-			    		exec("kill -TERM -- ".$pid);
+
+			    		$pids = [];
+			    		exec('pstree -pn '.$pid.' | grep -o "([[:digit:]]*)" | grep -o "[[:digit:]]*"',$pids);
+						p($pids);
+			    		array_reverse($pids);
+			    		p($pids);
+			    						    	
+				    	foreach($pids as $pid) {
+				    		p("kill -9 ".$pid);
+				    		exec("kill -9 ".$pid);
+				    	}
 			    	}
 				}
 
@@ -108,7 +118,7 @@
 		function log($message) {
 
 			$log = [];
-			$log[] = date("M j G:i:s");
+			$log[] = date("M j H:i:s");
 			$log[] = value($_SERVER,"HTTP_HOST");
 			$log[] = "\"".$this->get_option("title")."\"";
 			$log[] = $message;
