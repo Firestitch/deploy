@@ -61,6 +61,9 @@
 			    	if($pid) {
 			    		$this->log("PROCESS-KILL ".$pid);
 			    		exec("kill -TERM -- ".$pid);
+			    		// Kills any ng processes that have a root parent
+			    		// Did this because of orphaned ng processes that tied up memory
+			    		exec("pgrep -P 1 ^ng$ | xargs kill");
 			    	}
 				}
 
