@@ -53,14 +53,15 @@
 			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
 
 			if($process_file) {
-				$this->log("PROCESS-KEY ".$md5_process_key." ".$this->_process_key);
 				if($data=@file_get_contents($process_file)) {
 
 					$pid = value(@json_decode($data),"pid");
 
 			    	if($pid) {
 			    		$this->log("PROCESS-KILL ".$pid);
-			    		exec("kill -TERM -- ".$pid);
+			    		
+			    		$this->kill_pid($pid);
+
 			    		// Kills any ng processes that have a root parent
 			    		// Did this because of orphaned ng processes that tied up memory
 			    		exec("pgrep -P 1 ^ng$ | xargs kill");
@@ -83,6 +84,16 @@
 
 			if($process_file)
 				@unlink($process_file);
+		}
+
+		function kill_pid($root_pid) {
+    		$pids = [];
+    		exec('pstree -pn '.$root_pid.' | grep -o "([[:digit:]]*)" | grep -o "[[:digit:]]*"',$pids);
+			$pid = array_pop($pids);
+			if($pid) {
+	    		exec("kill -9 ".$pid);
+	    		$this->kill_pid($root_pid);
+	    	}
 		}
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }
@@ -111,7 +122,7 @@
 		function log($message) {
 
 			$log = [];
-			$log[] = date("M j G:i:s");
+			$log[] = date("M j H:i:s");
 			$log[] = value($_SERVER,"HTTP_HOST");
 			$log[] = "\"".$this->get_option("title")."\"";
 			$log[] = $message;

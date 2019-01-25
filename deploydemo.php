@@ -8,7 +8,7 @@
         //file_put_contents("payload.json",value($_POST,"payload"));
     }
 
-    $repo 			= preg_replace("/(fs-|-)/","",$repo);
+    $repo 			= preg_replace("/(fs-|ngx-|-)/","",$repo);
     $output_file 	= dirname(__DIR__)."/".$repo."/demo/index.html";
 
     if(!$repo)
