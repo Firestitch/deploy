@@ -3,48 +3,12 @@
 	<head>
 	    <meta charset="UTF-8">
 		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-		<script>
-		  var down = function() {
-		    setTimeout(function() {
-		      if($(".done").length) return;
-		      $('body').animate({scrollTop: $(document).height()}, 'fast');
-		      down();
-		    },1000);
-		  }
-		  //down();
-
-		  function error(id) {
-		  	$("body").attr('error','true');
-
-		  	if(id) {
-		  		$("#" + id).addClass('error');
-		  	}
-		  }
-		</script>
 		<style>
-		  .dn { display: none; }
-		  body { background-color: #000000; color: #FFFFFF; font-weight: bold; padding: 0 10px; font-family: monospace; }
-
-		  .error { color: red; }
-		  .error * { color: red !important; }
-		  .success { color: green; }
-		  a, a:hover, a:link {
-		      color: #1863C8;
-		      text-decoration: none;
-		  }
-		  .command {
-		  	color: #729FCF;
-		  }
-		  .prompt {
-		  	color: #6BE234;
-		  }
-
-		  pre {
-		  	margin: 2px 0 25px 0;
-		  }
+			<? file_get_contents("styles.css") ?>
 		</style>
 	</head>
-	<body error="false">
+	<body>
+
 		<h1><?=$title?></h1>
 		<h2>Built on <?=date("F j, Y, g:i a e")?></h2>
 
@@ -53,13 +17,13 @@
 
 		        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-		        <? $this->flush() ?>
-
 		        <?
+		        	$this->flush();
+
 					$descriptorspec = array(
-						0 => array("pipe", "r"),   // stdin is a pipe that the child will read from
-						1 => array("pipe", "w"),   // stdout is a pipe that the child will write to
-						2 => array("pipe", "w")    // stderr is a pipe that the child will write to
+						0 => ["pipe", "r"],
+						1 => ["pipe", "w"],
+						2 => ["pipe", "w"]
 					);
 
 					$this->flush();
@@ -70,37 +34,28 @@
 
 		          	if (is_resource($process)) {
 
-		          		$guid = uniqid();
-		          		echo '<span id="'.$guid.'">';
-			            while($string=fgets($pipes[1])) {
-							echo trim($converter->convert($string));
+				      do {
+				        
+				        $status = proc_get_status($process);
 
-			                // do {
+				        if (!feof($pipes[1])) {
+				          $string = fgets($pipes[1]);
+				          echo trim($converter->convert($string));
+				        }
 
-			                // 	$pid = value(proc_get_status($process),"pid");
+				        if (!feof($pipes[2])) {
+				          $string = fgets($pipes[2]);
+				          if($string) {
+				          	echo trim($converter->convert($string));
+				          	$errors[] = $string;
+				          }						          
+				        }
 
-			                // 	if($arr["running"])
-			                // 		$this->register_pid($pid);
-			                // 	else
-			                // 		$this->unregister_pid($pid);
+				        $this->flush();
 
-				               //  // 	$arr = proc_get_status($process);
-
-				               //  // 	if($arr["exitcode"]>0) {
-				               //  // 		echo "<script>error('".$guid."')</script>";
-				               //  // 	}
-
-			                // } while($arr["running"]);
-
-			                $this->flush();
-			            }
-
+				      } while ($status['running']);
+				    	   
 			            echo '</span>';
-
-			         	while($error=fgets($pipes[2])) {
-							echo '<div class="error">'.trim($error).'</div><script>error()</script>';
-							$this->flush();
-			         	}
 			        }
 
 		          	echo "</pre>";
@@ -114,12 +69,11 @@
 			<? } ?>
 		</div>
 
-		<h1 id="success" class="success dn">Build Complete</h1>
-		<h1 id="error" class="error dn" error="false">Build Failed</h1>
-
-		<script>
-			$("body[error='true']").length ? $("#error").show() : $("#success").show();
-		</script>
+		<? if($errors) { ?>
+			<h1 id="error" class="error" error="false">Build Failed</h1>
+		<? } else { ?>
+			<h1 id="success" class="success">Build Complete</h1>
+		<? } ?>
 
 	</body>
 </html>

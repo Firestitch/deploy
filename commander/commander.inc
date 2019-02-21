@@ -1,6 +1,9 @@
 <?
-	require_once __DIR__.'/../ansi-to-html/vendor/autoload.php';
+	require_once __DIR__.'/../vendor/autoload.php';
 	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
+	use MiladRahimi\PhpCrypt\Crypt;
 
 	class COMMANDER {
 
@@ -18,18 +21,19 @@
 			return $payload ? $payload : [];
 		}
 
-		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
+		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true,"error_email"=>""]) {
 
 			$this->_options		= $options;
 			$title 				= $this->get_option("title","Building");
 			$this->_output 		= $this->get_option("output",true);
 			$this->_output_file = $this->get_option("output_file");
 			$this->_process_key = $this->get_option("process_key");
+			$errors				= [];
 
 			$this->log("BUILD-START");
 
-			foreach($commands as $index=>$command)
-				$commands[$index] .= " 2>&1";
+			// foreach($commands as $index=>$command)
+			// 	$commands[$index] .= " 2>&1";
 
 			$converter = new AnsiToHtmlConverter();
 
@@ -84,6 +88,39 @@
 
 			if($process_file)
 				@unlink($process_file);
+
+			if($errors && ($error_email=value($options,"error_email"))) {
+
+				$mail = new PHPMailer(true);   
+				
+				try {
+
+					$crypt = new Crypt("30498ywdsifuyhg9435");
+
+				    $mail->isSMTP();
+				    $mail->SMTPAuth = true;
+				    $mail->Host = $crypt->decrypt("S3shzFQScHn4OPYt+gcPACgM4KaXHPICprGNEptbFaQ=:fXO4c92N0kieDmmZ0WSkfA==");				    
+				    $mail->Username = $crypt->decrypt("u2fXReWF7lj/OcIPWSE0Jw==:GSKfLO048XOxtbQC7RIFcQ==");
+				    $mail->Password = $crypt->decrypt("me2HiDq37VSZBp1lHK5q4/zmsweFrMWZzKf6q3pfiDE=:oUces8T36ldGf8bqeKjGvQ==");
+				    $mail->SMTPSecure = "tls";
+				    $mail->Port = 587;
+
+				    $mail->setFrom("sysadmin@firestitch.com","Firestitch Sysadmin");
+				    $mail->addAddress($error_email);
+				    
+				    $host = value($_SERVER,"HTTP_HOST");
+				    $mail->isHTML();
+				    $mail->Subject = 	"Deploy Error For ".$host;
+				    $mail->Body    = 	"The following errors where produced during the deployment process.<br><br>"
+				    					.implode("",$errors)."<br><br>".
+				    					"Please correct the build issues and re-deploy the code.<br><br>".
+				    					"<a href=\"".$host."\">{$host}</a>";
+				    $mail->send();
+
+				} catch (Exception $e) {
+				    echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+				}
+			}
 		}
 
 		function kill_pid($root_pid) {
@@ -120,6 +157,9 @@
 		}
 
 		function log($message) {
+
+			if(!is_dir("/var/log/nginx/"))
+				return;
 
 			$log = [];
 			$log[] = date("M j H:i:s");

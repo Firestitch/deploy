@@ -1,0 +1,7 @@
+{
+    "require": {
+        "sensiolabs/ansi-to-html": "^1.1.3",
+        "phpmailer/phpmailer": "^6.0.7",
+        "miladrahimi/phpcrypt": "^3.0"
+    }
+}

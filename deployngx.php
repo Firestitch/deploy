@@ -11,6 +11,7 @@
 	$package_file	= dirname(__DIR__)."/frontend/package.json";
 	$package_json	= @json_decode(file_get_contents($package_file));
 	$package_name	= value($package_json,"name");
+	$error_email 	= "";
 
 	$build_params = [];
 	$environment = value($_GET,"environment","dev");
@@ -31,6 +32,8 @@
 
 		if($branch!==$github_branch)
 			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
+
+		$error_email = value($payload,["pusher","email"]);
 	}
 
 	$commands = [ 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
@@ -45,7 +48,7 @@
 		            "cd ../deploy && git pull origin master",
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
-		            "cd ../frontend && npm install",
+		            "cd ../frontend && npm install --loglevel=error",
 		            "cd ../frontend && npm rebuild node-sass",
 		            "cd ../frontend && npm run build ".implode(" ",$build_params),
 	                "chown -R nginx:nginx ../frontend/dist" ];
@@ -55,6 +58,7 @@
 		COMMANDER::create()->build($commands,[	"title"=>$title,
 												"output"=>$output,
 												"output_file"=>$output_file,
+												"error_email"=>$error_email,
 												"process_key"=>basename(dirname(__DIR__))]);
 	}
 

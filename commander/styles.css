@@ -1,0 +1,25 @@
+body { 
+	background-color: #000000; 
+	color: #FFFFFF; 
+	font-weight: bold; 
+	padding: 0 10px; 
+	font-family: monospace; 
+}
+
+.error { color: red; }
+.error * { color: red !important; }
+.success { color: green; }
+a, a:hover, a:link {
+  color: #1863C8;
+  text-decoration: none;
+}
+.command {
+	color: #729FCF;
+}
+.prompt {
+	color: #6BE234;
+}
+
+pre {
+	margin: 2px 0 25px 0;
+}
