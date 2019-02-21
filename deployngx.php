@@ -36,16 +36,17 @@
 		$error_email = value($payload,["pusher","email"]);
 	}
 
+	// Aded 2>&1 to all git commands because git redirect output to error output even if its not an error
 	$commands = [ 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
 		            "whoami",
 		            "pwd",
-		            "cd ../ && git fetch --all",
-		            "cd ../ && git reset --hard origin/".$branch,
-		            "cd ../ && git pull origin ".$branch,
-		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master",
-		            "cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name'",
-		            "cd ../deploy && git reset --hard origin/master",
-		            "cd ../deploy && git pull origin master",
+		            "cd ../ && git fetch --all 2>&1",
+		            "cd ../ && git reset --hard origin/".$branch."  2>&1",
+		            "cd ../ && git pull origin ".$branch." 2>&1",
+		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
+		            "cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name' 2>&1",
+		            "cd ../deploy && git reset --hard origin/master 2>&1",
+		            "cd ../deploy && git pull origin master 2>&1",
 		            "cd ../backend/command && php upgrade.php",
 		            "cd ../backend/command && php init.php",
 		            "cd ../frontend && npm install --loglevel=error",

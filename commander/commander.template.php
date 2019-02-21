@@ -46,7 +46,7 @@
 					          	$string = fgets($pipes[2]);
 					          	if($string) {
 						          	$string = trim($converter->convert($string));
-						          	echo $string;
+						          	echo "<div class=\"error\">$string</div>";
 						          	$this->flush();
 						          	$errors[] = $string;
 					          	}
@@ -75,9 +75,9 @@
 		</div>
 
 		<? if($errors) { ?>
-			<h1 id="error" class="error" error="false">Build Failed</h1>
+			<h1 class="error" error="false">Build Failed</h1>
 		<? } else { ?>
-			<h1 id="success" class="success">Build Complete</h1>
+			<h1 class="success">Build Complete</h1>
 		<? } ?>
 
 	</body>
