@@ -16,7 +16,7 @@
 	$build_params[] = "--{$package_name}:env=".$environment;
 
 	$commands = ["npm install --loglevel=error"];
-	$commands = ["dir1"];
+	$commands = ["dir2","dir1"];
 
 	if($action_build) {
 		$title	= "Building ".ucwords($environment);

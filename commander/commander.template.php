@@ -38,15 +38,15 @@
 					        $status = proc_get_status($process);
 
 					        if(!feof($pipes[1])) {
-								$string = fgets($pipes[1]);
-								echo trim($converter->convert($string));
+								echo trim($converter->convert(fgets($pipes[1])));
 								$this->flush();
 					        }
 
 					        if(!feof($pipes[2])) {
 					          	$string = fgets($pipes[2]);
 					          	if($string) {
-						          	echo trim($converter->convert($string));
+						          	$string = trim($converter->convert($string));
+						          	echo $string;
 						          	$this->flush();
 						          	$errors[] = $string;
 					          	}
@@ -65,6 +65,12 @@
 		        ?>
 
 		        <? $this->flush() ?>
+
+		        <? 
+		        	if($errors) {
+		        		break;
+		        	}
+		        ?>
 			<? } ?>
 		</div>
 

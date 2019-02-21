@@ -110,8 +110,8 @@
 				    $host = value($_SERVER,"HTTP_HOST");
 				    $mail->isHTML();
 				    $mail->Subject = 	"Deploy Error For ".$host;
-				    $mail->Body    = 	"The following errors where produced during the deployment process.<br><br>"
-				    					.implode("",$errors)."<br><br>".
+				    $mail->Body    = 	"The following errors where produced during the deployment process.".
+				    					"<div style=\"background:#000;padding:15px;margin:15px 0;border-radius:4px;\">".implode("",$errors)."</div>".
 				    					"Please correct the build issues and re-deploy the code.<br><br>".
 				    					"<a href=\"".$host."\">{$host}</a>";
 				    $mail->send();
