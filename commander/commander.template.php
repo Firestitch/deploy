@@ -2,9 +2,8 @@
 <html lang="en-US">
 	<head>
 	    <meta charset="UTF-8">
-		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 		<style>
-			<? file_get_contents("styles.css") ?>
+			<?=file_get_contents(dirname(__FILE__)."/styles.css") ?>
 		</style>
 	</head>
 	<body>
@@ -32,30 +31,30 @@
 
 					echo "<pre>";
 
-		          	if (is_resource($process)) {
+		          	if(is_resource($process)) {
 
-				      do {
+				      	do {
 				        
-				        $status = proc_get_status($process);
+					        $status = proc_get_status($process);
 
-				        if (!feof($pipes[1])) {
-				          $string = fgets($pipes[1]);
-				          echo trim($converter->convert($string));
-				        }
+					        if(!feof($pipes[1])) {
+								$string = fgets($pipes[1]);
+								echo trim($converter->convert($string));
+								$this->flush();
+					        }
 
-				        if (!feof($pipes[2])) {
-				          $string = fgets($pipes[2]);
-				          if($string) {
-				          	echo trim($converter->convert($string));
-				          	$errors[] = $string;
-				          }						          
-				        }
+					        if(!feof($pipes[2])) {
+					          	$string = fgets($pipes[2]);
+					          	if($string) {
+						          	echo trim($converter->convert($string));
+						          	$this->flush();
+						          	$errors[] = $string;
+					          	}
+					        }
 
-				        $this->flush();
+					        $this->flush();
 
-				      } while ($status['running']);
-				    	   
-			            echo '</span>';
+				      	} while ($status['running']);
 			        }
 
 		          	echo "</pre>";

@@ -10,7 +10,6 @@
 		protected $_output_file 	= "";
 		protected $_output_buffer 	= "";
 		protected $_output 			= true;
-		//protected $_pids 			= [];
 
 		static function create() {
 			return new COMMANDER();
