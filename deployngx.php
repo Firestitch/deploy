@@ -11,7 +11,9 @@
 	$package_file	= dirname(__DIR__)."/frontend/package.json";
 	$package_json	= @json_decode(file_get_contents($package_file));
 	$package_name	= value($package_json,"name");
-	$error_email 	= "";
+	$payload 		= COMMANDER::get_github_payload();
+	$github_email 	= value($payload,["pusher","email"],"Unknown");
+	$github_name 	= value($payload,["pusher","name"],"Unknown");
 
 	$build_params = [];
 	$environment = value($_GET,"environment","dev");
@@ -25,20 +27,19 @@
 	if($device=value($_GET,"device"))
 		$build_params[] = "--{$package_name}:device=".$device;	
 
-	if($payload=COMMANDER::get_github_payload()) {
+	if($payload) {
 		// ref eg. refs/heads/master
 		preg_match("/([^\\/]+)$/",value($payload,"ref"),$matches);
 		$github_branch = value($matches,1);
 
 		if($branch!==$github_branch)
 			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
-
-		$error_email = value($payload,["pusher","email"]);
 	}
 
 	// Aded 2>&1 to all git commands because git redirect output to error output even if its not an error
 	$commands = [ 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
 		            "whoami",
+		            "echo \"GitHub User: $github_name <$github_email>\"",
 		            "pwd",
 		            "cd ../ && git fetch --all 2>&1",
 		            "cd ../ && git reset --hard origin/".$branch."  2>&1",
@@ -59,7 +60,7 @@
 		COMMANDER::create()->build($commands,[	"title"=>$title,
 												"output"=>$output,
 												"output_file"=>$output_file,
-												"error_email"=>$error_email,
+												"error_email"=>$github_email,
 												"process_key"=>basename(dirname(__DIR__))]);
 	}
 
