@@ -12,7 +12,7 @@
 	$package_json	= @json_decode(file_get_contents($package_file));
 	$package_name	= value($package_json,"name");
 	$payload 		= COMMANDER::get_github_payload();
-	$github_email 	= value($payload,["pusher","email"],"Unknown");
+	$github_email 	= value($payload,["pusher","email"],"");
 	$github_name 	= value($payload,["pusher","name"],"Unknown");
 
 	$build_params = [];
@@ -39,7 +39,7 @@
 	// Aded 2>&1 to all git commands because git redirect output to error output even if its not an error
 	$commands = [ 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
 		            "whoami",
-		            "echo \"GitHub User: $github_name <$github_email>\"",
+		            "echo \"GitHub User: $github_name $github_email\"",
 		            "pwd",
 		            "cd ../ && git fetch --all 2>&1",
 		            "cd ../ && git reset --hard origin/".$branch."  2>&1",

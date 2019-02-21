@@ -33,30 +33,19 @@
 
 		          	if(is_resource($process)) {
 
-				      	do {
-				        
-					        $status = proc_get_status($process);
+				      	while($string=fgets($pipes[1])) {
+							echo trim($converter->convert($string));
+							$this->flush();
+				        }
 
-					        if(!feof($pipes[1])) {
-								echo trim($converter->convert(fgets($pipes[1])));
-								$this->flush();
-					        }
-
-					        if(!feof($pipes[2])) {
-					          	$string = fgets($pipes[2]);
-					          	if($string) {
-						          	$string = trim($converter->convert($string));
-						          	echo "<div class=\"error\">$string</div>";
-						          	$this->flush();
-						          	$errors[] = $string;
-					          	}
-					        }
-
-					        $this->flush();
-
-				      	} while ($status['running']);
+				      	while($string=fgets($pipes[2])) {
+				      		$string = trim($converter->convert($string));
+				          	echo "<div class=\"error\">$string</div>";
+				          	$this->flush();
+				          	$errors[] = $string;
+				        }
 			        }
-
+			        
 		          	echo "</pre>";
 
 		        	@fclose($pipes[1]);
