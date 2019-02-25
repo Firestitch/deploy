@@ -16,11 +16,11 @@
 
 	$commands = [  	is_os_windows() ? "cd" : "echo \$PWD",
 		            is_os_windows() ? "echo %PATH%" : "echo \$PATH",
-                    "cd ../ && git fetch --all",
-		            "cd ../ && git reset --hard origin/master",
-		            "cd ../ && git pull",
-		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master",
-		            "cd ../ && git submodule update --recursive --remote --init",
+                    "cd ../ && git fetch --all 2>&1",
+		            "cd ../ && git reset --hard origin/master 2>&1",
+		            "cd ../ && git pull 2>&1",
+		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
+		            "cd ../ && git submodule update --recursive --remote --init 2>&1",
 		            "cd ../".$repo." && npm rebuild node-sass",
                     "cd ../".$repo." && npm install",
                     "cd ../".$repo." && npm run demo:build"];
