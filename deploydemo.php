@@ -22,7 +22,7 @@
 		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
 		            "cd ../ && git submodule update --recursive --remote --init 2>&1",
 		            "cd ../".$repo." && npm rebuild node-sass",
-                    "cd ../".$repo." && npm install",
+                    "cd ../".$repo." && npm install --loglevel=error",
                     "cd ../".$repo." && npm run demo:build"];
 
 	COMMANDER::create()->build($commands,[	"title"=>"Building ".ucfirst($repo)." Demo",
