@@ -17,9 +17,9 @@
 		            "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
 		            "cd ../ && git submodule update --init 2>&1",
 		            "cd ../ && git status 2>&1",
-		            "cd ../frontend && bower prune",
+		            "cd ../frontend && bower prune 2>&1",
 		            "cd ../frontend && bower update 2>&1",
-		            "cd ../frontend && grunt build:".$environment.($minify ? "" : " --nomin"),
+		            "cd ../frontend && grunt build:".$environment.($minify ? "" : " --nomin")." 2>&1",
 	                "chown -R nginx:nginx ../frontend/dist"];
 
 	if($environment=="development" || $environment=="staging") {
