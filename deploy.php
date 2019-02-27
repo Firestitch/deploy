@@ -18,7 +18,7 @@
 		            "cd ../ && git submodule update --init 2>&1",
 		            "cd ../ && git status 2>&1",
 		            "cd ../frontend && bower prune",
-		            "cd ../frontend && bower update",
+		            "cd ../frontend && bower update 2>&1",
 		            "cd ../frontend && grunt build:".$environment.($minify ? "" : " --nomin"),
 	                "chown -R nginx:nginx ../frontend/dist"];
 
