@@ -27,8 +27,8 @@
 		$output_file 	= $frontend_dir."dist-zip/index.html";
 	}
 
-	if($device=value($_GET,"device"))
-		$build_params[] = "--{$package_name}:device=".$device;	
+	if($platform=value($_GET,"platform"))
+		$build_params[] = "--{$package_name}:platform=".$platform;	
 
 	if($payload) {
 		// ref eg. refs/heads/master
