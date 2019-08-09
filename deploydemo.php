@@ -26,7 +26,8 @@
 		            "cd ../ && git submodule init ".$repo,
 		            "cd ../".$repo." && git rev-parse --abbrev-ref HEAD",
 		            "cd ../".$repo." && git reset --hard",
-		            "cd ../".$repo." && git pull",
+		            "cd ../ && git submodule update --remote ".$repo,
+		            "cd ../".$repo." && git submodule update --recursive ".$repo,
 		            "cd ../".$repo." && npm rebuild node-sass",
                     "cd ../".$repo." && npm install --loglevel=error",
                     "cd ../".$repo." && npm run demo:build"];
