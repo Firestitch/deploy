@@ -46,9 +46,8 @@
 
 			$this->log("BUILD-END");
 
-			if($errors) {
-				exit(implode(" ",$errors));
-			}
+			foreach($errors as $error)
+				fwrite(STDERR, $error);
 		}
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }

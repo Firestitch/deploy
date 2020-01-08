@@ -1,6 +1,7 @@
 <?
 	require "vendor/autoload.php";
 	require("__autoload.inc");
+	
 	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
@@ -24,7 +25,7 @@
 	preg_match("/([^\\/]+)$/",value($github_payload,"ref"),$matches);
 	$github_branch = value($matches,1);	
 
-	$data = [
+	$config = [
 		"github_branch"=>$github_branch,
 		"branch"=>$branch,
 		"action"=>$action,
@@ -32,8 +33,8 @@
 		"platform"=>$platform
 	];
 
-	$get = addslashes(json_encode($data));
-	$cmd = 'php deployngx-process.php "'.$get.'"';
+	$config = addslashes(json_encode($config));
+	$cmd = 'php deployngx-process.php "'.$config.'"';
 
 	if(!$is_windows) {
 		$process = @file_get_contents("process.pid");
