@@ -48,31 +48,6 @@
 
 			$this->start();
 
-			// @mkdir("processes");
-			// $md5_process_key = md5($this->_process_key);
-			// $process_file = $this->_process_key ? "processes/".$md5_process_key : null;
-
-			// if($process_file) {
-				
-			// 	if($data=@file_get_contents($process_file)) {
-
-			// 		$pid = value(@json_decode($data),"pid");
-
-			//     	if($pid) {
-			//     		$this->log("PROCESS-KILL ".$pid);
-			//     		//$this->kill_pid($pid);
-			    		
-
-			//     		// Kills any ng processes that have a root parent
-			//     		// Did this because of orphaned ng processes that tied up memory
-			//     		//exec("pgrep -P 1 ^ng$ | xargs kill");
-			//     	}
-			// 	}
-
-			// 	$data = ["pid"=>getmypid(),"process_key"=>$this->_process_key];
-			// 	file_put_contents($process_file,json_encode($data));
-			// }
-
 			require_once("commander.template.php");
 			@ob_end_flush();
 
@@ -82,9 +57,6 @@
 			}
 
 			$this->log("BUILD-END");
-
-			// if($process_file)
-			// 	@unlink($process_file);
 
 			if($errors && ($error_email=value($options,"error_email"))) {
 
@@ -134,21 +106,12 @@
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }
 
-
 		function start() {
 			ob_start(function($buffer) {
 				$this->_output_buffer .= $buffer;
 				return $this->_output ? $buffer : '';
 			});
 		}
-
-		// function register_pid($pid) {
-		// 	$this->_pids[$pid] = true;
-		// }
-
-		// function unregister_pid($pid) {
-		// 	unset($this->_pids[$pid]);
-		// }
 
 		function flush() {
 			@ob_end_flush();

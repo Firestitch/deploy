@@ -51,7 +51,7 @@
         "cd ../ && git pull origin ".$branch." 2>&1",
         "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
         "cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name' 2>&1",
-        "cd ../frontend && setsid npm install --loglevel=error",
+        "cd ../frontend && npm install --loglevel=error",
         "cd ../frontend && npm rebuild node-sass",
         "cd ../frontend && npm run build ".implode(" ",$build_params),
         "chown -R nginx:nginx ../frontend/dist"
