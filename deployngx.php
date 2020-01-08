@@ -1,75 +1,31 @@
 <?
 	require("__autoload.inc");
 
-	$branch 		= value($_GET,"branch");
-	$action			= value($_GET,"action","build");
-	$action_build 	= preg_match("/build/",$action);
-	$action_zip	 	= preg_match("/zip/",$action);
-	$output			= $action=="build";
-	$branch 		= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
-	$dir 			= dirname(__DIR__)."/";
-	$frontend_dir 	= $dir."frontend/";
-	$backend_dir 	= $dir."backend/";
-	$output_file 	= $frontend_dir."dist/index.html";
-	$package_file	= $frontend_dir."package.json";
-	$package_json	= @json_decode(file_get_contents($package_file));
-	$package_name	= value($package_json,"name");
-	$payload 		= COMMANDER::get_github_payload();
-	$github_email 	= value($payload,["pusher","email"],"");
-	$github_name 	= value($payload,["pusher","name"],"Unknown");	
+	//$_GET = ["branch"=>"deploy"];
+	
+	$get = addslashes(json_encode($_GET));
 
-	$build_params = [];
-	$environment = value($_GET,"environment","dev");
-	$build_params[] = "--{$package_name}:env=".$environment;
+	$cmd = "php deployngx-process.php \"".$get."\"";
 
-	if($action_zip) {
-		$build_params[] = "--{$package_name}:outputpath=dist-zip";
-		$output_file 	= $frontend_dir."dist-zip/index.html";
-	}
+	$descriptorspec = [
+		0 => ["pipe", "r"],
+		1 => ["pipe", "w"],
+		2 => ["pipe", "w"]
+	];
 
-	if($platform=value($_GET,"platform"))
-		$build_params[] = "--{$package_name}:platform=".$platform;	
+	$process = proc_open($cmd, $descriptorspec, $pipes, realpath('./'));
+	@fclose($pipes[0]);
 
-	if($payload) {
-		// ref eg. refs/heads/master
-		preg_match("/([^\\/]+)$/",value($payload,"ref"),$matches);
-		$github_branch = value($matches,1);
+	$status = proc_get_status($process);
 
-		if($branch!==$github_branch)
-			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
-	}
+  	if(is_resource($process)) {
 
-	// Aded 2>&1 to all git commands because git redirect output to error output even if its not an error
-	$commands = [ 	
-		is_os_windows() ? "echo %PATH%" : "echo \$PATH",
-        "whoami",
-        "echo \"GitHub User: $github_name $github_email\"",
-        "pwd",
-        "cd ../ && git fetch --all 2>&1",
-        "cd ../ && git reset --hard origin/".$branch."  2>&1",
-        "cd ../ && git pull origin ".$branch." 2>&1",
-        "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
-        "cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name' 2>&1",
-        "cd ../frontend && npm install --loglevel=error",
-        "cd ../frontend && npm rebuild node-sass",
-        "cd ../frontend && npm run build ".implode(" ",$build_params),
-        "chown -R nginx:nginx ../frontend/dist"
-    ];
+      	while($string=fgets($pipes[1])) {
+			echo $string;
+			@ob_end_flush();
+        }
+    }
 
-	if(is_file($backend_dir."command/upgrade.php")) 
-		$commands[] = "cd ../backend/command && php upgrade.php";
-
-	if(is_file($backend_dir."command/init.php")) 
-		$commands[] = "cd ../backend/command && php init.php";
-
-	if($action_build) {
-		$title	= "Building ".ucwords($environment);
-		COMMANDER::create()->build($commands,[	"title"=>$title,
-												"output"=>$output,
-												"output_file"=>$output_file,
-												"error_email"=>$github_email,
-												"process_key"=>basename(dirname(__DIR__))]);
-	}
-
-	if($action_zip)
-		COMMANDER::create()->zip($frontend_dir."dist-zip",["ignore"=>"/^\.git/"]);
+	@fclose($pipes[1]);
+ 	@fclose($pipes[2]);
+  	proc_close($process);

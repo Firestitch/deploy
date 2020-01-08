@@ -56,18 +56,19 @@
 			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
 
 			if($process_file) {
+				
 				if($data=@file_get_contents($process_file)) {
 
 					$pid = value(@json_decode($data),"pid");
 
 			    	if($pid) {
 			    		$this->log("PROCESS-KILL ".$pid);
+			    		//$this->kill_pid($pid);
 			    		
-			    		$this->kill_pid($pid);
 
 			    		// Kills any ng processes that have a root parent
 			    		// Did this because of orphaned ng processes that tied up memory
-			    		exec("pgrep -P 1 ^ng$ | xargs kill");
+			    		//exec("pgrep -P 1 ^ng$ | xargs kill");
 			    	}
 				}
 
