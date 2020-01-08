@@ -1,10 +1,7 @@
 <?
 	require_once __DIR__.'/../vendor/autoload.php';
 	use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\Exception;
-	use MiladRahimi\PhpCrypt\Crypt;
-
+	
 	class COMMANDER {
 
 		protected $_output_file 	= "";
@@ -15,12 +12,7 @@
 			return new COMMANDER();
 		}
 
-		static function get_github_payload() {
-			$payload = @json_decode(value($_POST,"payload"));
-			return $payload ? $payload : [];
-		}
-
-		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true,"error_email"=>""]) {
+		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
 			$this->_options		= $options;
 			$title 				= $this->get_option("title","Building");
@@ -31,16 +23,12 @@
 
 			$this->log("BUILD-START");
 
-			// foreach($commands as $index=>$command)
-			// 	$commands[$index] .= " 2>&1";
-
 			$converter = new AnsiToHtmlConverter();
 
 			error_reporting(E_ALL);
-			ignore_user_abort(true);
 			date_default_timezone_set('America/Toronto');
 
-			ini_set('max_execution_time', 300);
+			ini_set("max_execution_time", 300);
 			set_time_limit(300);
 
 			if($this->_output_file)
@@ -58,50 +46,9 @@
 
 			$this->log("BUILD-END");
 
-			if($errors && ($error_email=value($options,"error_email"))) {
-
-				$mail = new PHPMailer(true);   
-				
-				try {
-
-					$crypt = new Crypt("30498ywdsifuyhg9435");
-
-				    $mail->isSMTP();
-				    $mail->SMTPAuth = true;
-				    $mail->Host = $crypt->decrypt("S3shzFQScHn4OPYt+gcPACgM4KaXHPICprGNEptbFaQ=:fXO4c92N0kieDmmZ0WSkfA==");				    
-				    $mail->Username = $crypt->decrypt("u2fXReWF7lj/OcIPWSE0Jw==:GSKfLO048XOxtbQC7RIFcQ==");
-				    $mail->Password = $crypt->decrypt("me2HiDq37VSZBp1lHK5q4/zmsweFrMWZzKf6q3pfiDE=:oUces8T36ldGf8bqeKjGvQ==");
-				    $mail->SMTPSecure = "tls";
-				    $mail->Port = 587;
-
-				    $mail->setFrom("sysadmin@firestitch.com","Firestitch Sysadmin");
-				    $mail->addAddress($error_email);
-				    
-				    $error = implode("",$errors);
-
-				    $host = value($_SERVER,"HTTP_HOST");
-				    $mail->isHTML();
-				    $mail->Subject = 	"Deploy Error For ".$host;
-				    $mail->Body    = 	"The following errors where produced during the deployment process.".
-				    					"<div style=\"background:#000;padding:15px;margin:15px 0;border-radius:4px;white-space:pre-wrap;font-family:monospace;\">".$error."</div>".
-				    					"Please correct the build issues and re-deploy the code.<br><br>".
-				    					"<a href=\"".$host."\">{$host}</a>";
-				    $mail->send();
-
-				} catch (Exception $e) {
-				    echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
-				}
+			if($errors) {
+				exit(implode(" ",$errors));
 			}
-		}
-
-		function kill_pid($root_pid) {
-    		$pids = [];
-    		exec('pstree -pn '.$root_pid.' | grep -o "([[:digit:]]*)" | grep -o "[[:digit:]]*"',$pids);
-			$pid = array_pop($pids);
-			if($pid) {
-	    		exec("kill -9 ".$pid);
-	    		$this->kill_pid($root_pid);
-	    	}
 		}
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }

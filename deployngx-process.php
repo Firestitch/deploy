@@ -1,9 +1,10 @@
 <?
 	require("__autoload.inc");
 
-	$_GET 			= json_decode($argv[1]);
-	$branch 		= value($_GET,"branch");
-	$action			= value($_GET,"action","build");
+	$config 		= json_decode($argv[1]);
+	$branch 		= value($config,"branch");
+	$action			= value($config,"action","build");
+	$github_branch	= value($config,"github_branch");
 	$action_build 	= preg_match("/build/",$action);
 	$action_zip	 	= preg_match("/zip/",$action);
 	$output			= $action=="build";
@@ -15,12 +16,9 @@
 	$package_file	= $frontend_dir."package.json";
 	$package_json	= @json_decode(file_get_contents($package_file));
 	$package_name	= value($package_json,"name");
-	$payload 		= COMMANDER::get_github_payload();
-	$github_email 	= value($payload,["pusher","email"],"");
-	$github_name 	= value($payload,["pusher","name"],"Unknown");	
 
 	$build_params = [];
-	$environment = value($_GET,"environment","dev");
+	$environment = value($config,"environment","dev");
 	$build_params[] = "--{$package_name}:env=".$environment;
 
 	if($action_zip) {
@@ -28,23 +26,15 @@
 		$output_file 	= $frontend_dir."dist-zip/index.html";
 	}
 
-	if($platform=value($_GET,"platform"))
+	if($platform=value($config,"platform"))
 		$build_params[] = "--{$package_name}:platform=".$platform;	
 
-	if($payload) {
-		// ref eg. refs/heads/master
-		preg_match("/([^\\/]+)$/",value($payload,"ref"),$matches);
-		$github_branch = value($matches,1);
-
-		if($branch!==$github_branch)
-			die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
-	}
+	if($github_branch && $branch!==$github_branch)
+		die("Branches do not match. Local Branch: ".$branch.", Github Branch: ".$github_branch);
 
 	// Aded 2>&1 to all git commands because git redirect output to error output even if its not an error
 	$commands = [ 	
 		is_os_windows() ? "echo %PATH%" : "echo \$PATH",
-        "whoami",
-        "echo \"GitHub User: $github_name $github_email\"",
         "pwd",
         "cd ../ && git fetch --all 2>&1",
         "cd ../ && git reset --hard origin/".$branch."  2>&1",
@@ -68,7 +58,6 @@
 		COMMANDER::create()->build($commands,[	"title"=>$title,
 												"output"=>$output,
 												"output_file"=>$output_file,
-												"error_email"=>$github_email,
 												"process_key"=>basename(dirname(__DIR__))]);
 	}
 
