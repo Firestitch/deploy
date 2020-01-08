@@ -34,8 +34,6 @@
 		          	if(is_resource($process)) {
 
 				      	while($string=fgets($pipes[1])) {
-				      		
-				          	$errors[] = $string;
 							echo trim($converter->convert($string));
 							$this->flush();
 				        }
