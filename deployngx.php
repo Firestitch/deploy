@@ -52,3 +52,4 @@
 	@fclose($pipes[1]);
  	@fclose($pipes[2]);
   	proc_close($process);
+  	@unlink("process.pid");
