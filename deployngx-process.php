@@ -1,8 +1,7 @@
 <?
 	require("__autoload.inc");
 
-	$_GET = json_decode($argv[1]);
-
+	$_GET 			= json_decode($argv[1]);
 	$branch 		= value($_GET,"branch");
 	$action			= value($_GET,"action","build");
 	$action_build 	= preg_match("/build/",$action);

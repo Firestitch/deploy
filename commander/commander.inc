@@ -36,13 +36,10 @@
 
 			$converter = new AnsiToHtmlConverter();
 
-			header('X-Accel-Buffering: no'); //Disables Nginx's gzip/buffering and allows for output streaming
 			error_reporting(E_ALL);
-			ini_set('display_errors', 1);
-			ini_set('output_buffering', 'off');
-			ini_set('implicit_flush', true);
-			date_default_timezone_set('America/Toronto');
 			ignore_user_abort(true);
+			date_default_timezone_set('America/Toronto');
+
 			ini_set('max_execution_time', 300);
 			set_time_limit(300);
 
@@ -51,30 +48,30 @@
 
 			$this->start();
 
-			@mkdir("processes");
-			$md5_process_key = md5($this->_process_key);
-			$process_file = $this->_process_key ? "processes/".$md5_process_key : null;
+			// @mkdir("processes");
+			// $md5_process_key = md5($this->_process_key);
+			// $process_file = $this->_process_key ? "processes/".$md5_process_key : null;
 
-			if($process_file) {
+			// if($process_file) {
 				
-				if($data=@file_get_contents($process_file)) {
+			// 	if($data=@file_get_contents($process_file)) {
 
-					$pid = value(@json_decode($data),"pid");
+			// 		$pid = value(@json_decode($data),"pid");
 
-			    	if($pid) {
-			    		$this->log("PROCESS-KILL ".$pid);
-			    		//$this->kill_pid($pid);
+			//     	if($pid) {
+			//     		$this->log("PROCESS-KILL ".$pid);
+			//     		//$this->kill_pid($pid);
 			    		
 
-			    		// Kills any ng processes that have a root parent
-			    		// Did this because of orphaned ng processes that tied up memory
-			    		//exec("pgrep -P 1 ^ng$ | xargs kill");
-			    	}
-				}
+			//     		// Kills any ng processes that have a root parent
+			//     		// Did this because of orphaned ng processes that tied up memory
+			//     		//exec("pgrep -P 1 ^ng$ | xargs kill");
+			//     	}
+			// 	}
 
-				$data = ["pid"=>getmypid(),"process_key"=>$this->_process_key];
-				file_put_contents($process_file,json_encode($data));
-			}
+			// 	$data = ["pid"=>getmypid(),"process_key"=>$this->_process_key];
+			// 	file_put_contents($process_file,json_encode($data));
+			// }
 
 			require_once("commander.template.php");
 			@ob_end_flush();
@@ -86,8 +83,8 @@
 
 			$this->log("BUILD-END");
 
-			if($process_file)
-				@unlink($process_file);
+			// if($process_file)
+			// 	@unlink($process_file);
 
 			if($errors && ($error_email=value($options,"error_email"))) {
 
