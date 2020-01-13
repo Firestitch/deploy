@@ -13,5 +13,5 @@
 		"repo"=>$repo
 	];
 
-	run_process("deploydemo-process.php", $config, $github_email, "");
+	run_process("deploydemo-process.php", $config, $github_email, $repo."/process.pid");
 
