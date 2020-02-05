@@ -1,21 +1,22 @@
 <?
 	require("__autoload.inc");
 
-	$config 		= json_decode($argv[1]);
-	$branch 		= value($config,"branch");
-	$action			= value($config,"action","build");
-	$github_branch	= value($config,"github_branch");
-	$action_build 	= preg_match("/build/",$action);
-	$action_zip	 	= preg_match("/zip/",$action);
-	$output			= $action=="build";
-	$branch 		= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
-	$dir 			= dirname(__DIR__)."/";
-	$frontend_dir 	= $dir."frontend/";
-	$backend_dir 	= $dir."backend/";
-	$output_file 	= $frontend_dir."dist/index.html";
-	$package_file	= $frontend_dir."package.json";
-	$package_json	= @json_decode(file_get_contents($package_file));
-	$package_name	= value($package_json,"name");
+	$config 			= json_decode($argv[1]);
+	$branch 			= value($config,"branch");
+	$action				= value($config,"action","build");
+	$github_branch		= value($config,"github_branch");
+	$action_build 		= preg_match("/build/",$action);
+	$action_zip	 		= preg_match("/zip/",$action);
+	$output				= $action=="build";
+	$branch 			= $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
+	$dir 				= dirname(__DIR__)."/";
+	$frontend_dir 		= $dir."frontend/";
+	$backend_dir 		= $dir."backend/";
+	$output_file 		= $frontend_dir."dist/index.html";
+	$package_file		= $frontend_dir."package.json";
+	$package_json		= @json_decode(file_get_contents($package_file));
+	$package_name		= value($package_json,"name");
+	$build_start_date 	= date("F j, Y, g:i a e");
 
 	$build_params = [];
 	$environment = value($config,"environment","dev");
@@ -41,6 +42,10 @@
         "cd ../ && git pull origin ".$branch." 2>&1",
         "cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
         "cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name' 2>&1",
+        "rmdir ../frontend/dist",
+        "mkdir dist ../frontend/dist",
+        "cp pages/build.html ../frontend/dist/index.html",
+        "sed -i 's/{{build_start_date}}/".$build_start_date."/' ../frontend/dist/index.html"
         "cd ../frontend && npm install --loglevel=error",
         "cd ../frontend && npm rebuild node-sass",
         "cd ../frontend && npm run build ".implode(" ",$build_params),
