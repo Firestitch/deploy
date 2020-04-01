@@ -7,6 +7,7 @@
 		protected $_output_file 	= "";
 		protected $_output_buffer 	= "";
 		protected $_output 			= true;
+		protected $_errors			= [];
 
 		static function create() {
 			return new COMMANDER();
@@ -39,7 +40,7 @@
 			require_once("commander.template.php");
 			@ob_end_flush();
 
-			if($this->_output_file && !is_file($this->_output_file)) {
+			if($this->_output_file && $errors) {
 				@mkdir(dirname($this->_output_file),0777,true);
 				@file_put_contents($this->_output_file,$this->_output_buffer);
 			}
