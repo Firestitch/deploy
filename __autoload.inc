@@ -72,7 +72,7 @@
 
 			    $mail->isSMTP();
 			    $mail->SMTPAuth = true;
-			    $mail->Host = $crypt->decrypt("S3shzFQScHn4OPYt+gcPACgM4KaXHPICprGNEptbFaQ=:fXO4c92N0kieDmmZ0WSkfA==");				    
+			    $mail->Host = $crypt->decrypt("S3shzFQScHn4OPYt+gcPACgM4KaXHPICprGNEptbFaQ=:fXO4c92N0kieDmmZ0WSkfA==");
 			    $mail->Username = $crypt->decrypt("u2fXReWF7lj/OcIPWSE0Jw==:GSKfLO048XOxtbQC7RIFcQ==");
 			    $mail->Password = $crypt->decrypt("me2HiDq37VSZBp1lHK5q4/zmsweFrMWZzKf6q3pfiDE=:oUces8T36ldGf8bqeKjGvQ==");
 			    $mail->SMTPSecure = "tls";
@@ -86,10 +86,9 @@
 			    $host = value($_SERVER,"HTTP_HOST");
 			    $mail->isHTML();
 			    $mail->Subject = 	"Deploy Error For ".$host;
-			    $mail->Body    = 	"The following errors where produced during the deployment process.".
-			    					"<div style=\"background:#000;color:#fff;padding:15px;margin:15px 0;border-radius:4px;white-space:pre-wrap;font-family:monospace;\">".$error."</div>".
-			    					"Please correct the build issues and re-deploy the code.<br><br>".
-			    					"<a href=\"".$host."\">{$host}</a>";
+			    $mail->Body    = 	"The following errors where produced during the deployment process.<br><br>".
+			    					"Command: ".$cmd."<br><br>".
+			    					"<div style=\"background:#000;color:#fff;padding:15px;margin:15px 0;border-radius:4px;white-space:pre-wrap;font-family:monospace;\">".$error."</div>";
 			    $mail->send();
 
 			} catch (Exception $e) {
