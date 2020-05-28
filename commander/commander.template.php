@@ -40,8 +40,8 @@
 		}
 
 		while ($string = fgets($pipes[2])) {
-			$string = trim($converter->convert($string));
-			if ($string) {
+			if (trim($string)) {
+				$string = trim($converter->convert($string));
 				echo "<div class=\"error\">$string</div>";
 				$this->flush();
 				$errors[] = $string;
