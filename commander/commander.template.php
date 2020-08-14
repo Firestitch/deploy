@@ -71,10 +71,10 @@
 			<?}?>
 		</div>
 
-		<?if ($errors) {?>
+		<?if ($this->_failed) {?>
 			<h1 class="error" error="false">Build Failed</h1>
 		<?} else {?>
-			<h1 class="success">Build Complete</h1>
+			<h1 class="success">Build Successful</h1>
 		<?}?>
 
 	</body>
