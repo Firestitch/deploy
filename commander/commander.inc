@@ -8,6 +8,7 @@
 		protected $_output_buffer 	= "";
 		protected $_output 			= true;
 		protected $_errors			= [];
+		protected $_failed			= false;
 
 		static function create() {
 			return new COMMANDER();
@@ -40,15 +41,16 @@
 			require_once("commander.template.php");
 			@ob_end_flush();
 
-			if($this->_output_file && $errors) {
+			if($this->_output_file && $this->_failed) {
 				@mkdir(dirname($this->_output_file),0777,true);
 				@file_put_contents($this->_output_file,$this->_output_buffer);
 			}
 
 			$this->log("BUILD-END");
 
-			foreach($errors as $error)
-				fwrite(STDERR, $error);
+			if($this->_failed)
+				foreach($errors as $error)
+					fwrite(STDERR, $error);
 		}
 
 		function get_option($name,$default=null) { return value($this->_options,$name,$default); }

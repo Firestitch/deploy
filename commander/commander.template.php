@@ -46,6 +46,11 @@
 				$this->flush();
 				$errors[] = $string;
 			}
+
+			$exitcode = value(proc_get_status($process),"exitcode");
+
+			if($exitcode > 0)
+				$this->_failed = true;
 		}
 	}
 
@@ -56,9 +61,9 @@
 	proc_close($process);
 	?>
 
-		        <?$this->flush()?>
+    <?$this->flush()?>
 
-		        <?
+    <?
 	if ($errors) {
 		break;
 	}
