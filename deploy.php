@@ -1,4 +1,4 @@
-<?
+<?php
 	require("__autoload.inc");
 
 	$environment	= value($_GET,"environment","development");

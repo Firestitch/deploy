@@ -1,4 +1,4 @@
-<?
+<?php
 	require "vendor/autoload.php";
 	require("commander/commander.inc");
 
@@ -6,8 +6,8 @@
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 	use MiladRahimi\PhpCrypt\Crypt;
-	
-	header("X-Accel-Buffering: no"); //Disables Nginx's gzip/buffering and allows for output streaming			
+
+	header("X-Accel-Buffering: no"); //Disables Nginx's gzip/buffering and allows for output streaming
 	ignore_user_abort(true);
 	ini_set("display_errors", 1);
 	ini_set("output_buffering", "off");
@@ -64,8 +64,8 @@
 
 		if($errors && $notification_email) {
 
-			$mail = new PHPMailer(true);   
-			
+			$mail = new PHPMailer(true);
+
 			try {
 
 				$crypt = new Crypt("30498ywdsifuyhg9435");
@@ -80,7 +80,7 @@
 
 			    $mail->setFrom("sysadmin@firestitch.com","Firestitch Deployment");
 			    $mail->addAddress($notification_email);
-			    
+
 			    $error = implode("",$errors);
 
 			    $host = value($_SERVER,"HTTP_HOST");

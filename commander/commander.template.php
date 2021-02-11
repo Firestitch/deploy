@@ -17,7 +17,7 @@
 
 		        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-		        <?
+		        <?php
 	$this->flush();
 
 	$descriptorspec = array(
@@ -63,7 +63,7 @@
 
     <?$this->flush()?>
 
-    <?
+    <?php
 	if ($errors) {
 		break;
 	}

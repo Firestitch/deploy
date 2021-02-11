@@ -1,4 +1,4 @@
-<?
+<?php
 	require("__autoload.inc");
 
 	$config 		= json_decode($argv[1]);

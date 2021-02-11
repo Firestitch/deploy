@@ -1,4 +1,4 @@
-<?
+<?php
 require "__autoload.inc";
 
 $payload = @json_decode(value($_POST, "payload"));
