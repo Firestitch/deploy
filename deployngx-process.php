@@ -70,7 +70,3 @@ if ($action_build) {
 		"output_file" => $output_file,
 		"process_key" => basename(dirname(__DIR__))]);
 }
-
-if ($action_zip) {
-	COMMANDER::create()->zip($frontend_dir . "dist-zip", ["ignore" => "/^\.git/"]);
-}
