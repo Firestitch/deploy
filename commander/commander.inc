@@ -16,12 +16,12 @@
 
 		function build($commands,$options=["title"=>"","capture"=>true,"output"=>true]) {
 
-			$this->_options		= $options;
-			$title 				= $this->get_option("title","Building");
-			$this->_output 		= $this->get_option("output",true);
+			$this->_options = $options;
+			$title = $this->get_option("title","Building");
+			$this->_output = $this->get_option("output",true);
 			$this->_output_file = $this->get_option("output_file");
 			$this->_process_key = $this->get_option("process_key");
-			$errors				= [];
+			$errors = [];
 
 			$this->log("BUILD-START");
 
@@ -115,8 +115,8 @@
 						$zip->addEmptyDir($path);
 				}
 
-			    @$zip->close();
-			    header('Content-Description: File Transfer');
+		    @$zip->close();
+		    header('Content-Description: File Transfer');
 				header('Content-Type: application/octet-stream');
 				header('Content-Disposition: attachment; filename="'.basename($zip_file).'"');
 				header("Content-Transfer-Encoding: binary");

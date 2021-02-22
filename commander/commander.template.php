@@ -12,63 +12,56 @@
 		<h2>Built on <?=date("F j, Y, g:i a e")?></h2>
 
 		<div class="output">
-			<?foreach ($commands as $command) {
-	?>
+			<?foreach ($commands as $command) { ?>
 
-		        <span class="prompt">$</span> <span class="command"><?=$command?></span>
+        <span class="prompt">$</span> <span class="command"><?=$command?></span>
 
-		        <?php
-	$this->flush();
+        <?php
+        	$this->flush();
 
-	$descriptorspec = array(
-		0 => ["pipe", "r"],
-		1 => ["pipe", "w"],
-		2 => ["pipe", "w"],
-	);
+        	$descriptorspec = array(
+        		0 => ["pipe", "r"],
+        		1 => ["pipe", "w"],
+        		2 => ["pipe", "w"],
+        	);
 
-	$this->flush();
-	$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
-	@fclose($pipes[0]);
+        	$this->flush();
+        	$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
+        	@fclose($pipes[0]);
 
-	echo "<pre>";
+        	echo "<pre>";
 
-	if (is_resource($process)) {
+        	if (is_resource($process)) {
 
-		while ($string = fgets($pipes[1])) {
-			echo trim($converter->convert($string));
-			$this->flush();
-		}
+        		while ($string = fgets($pipes[1])) {
+        			echo trim($converter->convert($string));
+        			$this->flush();
+        		}
 
-		while ($string = fgets($pipes[2])) {
-			if (trim($string)) {
-				$string = trim($converter->convert($string));
-				echo "<div class=\"error\">$string</div>";
-				$this->flush();
-				$errors[] = $string;
-			}
+        		while ($string = fgets($pipes[2])) {
+        			if (trim($string)) {
+        				$string = trim($converter->convert($string));
+        				echo "<div class=\"error\">$string</div>";
+        				$this->flush();
+        				$errors[] = $string;
+        			}
 
-			$exitcode = value(proc_get_status($process),"exitcode");
+        			$exitcode = value(proc_get_status($process),"exitcode");
 
-			if($exitcode > 0)
-				$this->_failed = true;
-		}
-	}
+        			if($exitcode > 0)
+        				$this->_failed = true;
+        		}
+        	}
 
-	echo "</pre>";
+        	echo "</pre>";
+        	@fclose($pipes[1]);
+        	@fclose($pipes[2]);
+        	proc_close($process);
+        ?>
 
-	@fclose($pipes[1]);
-	@fclose($pipes[2]);
-	proc_close($process);
-	?>
+        <?$this->flush()?>
 
-    <?$this->flush()?>
-
-    <?php
-	if ($errors) {
-		break;
-	}
-	?>
-			<?}?>
+			<? } ?>
 		</div>
 
 		<?if ($this->_failed) {?>
