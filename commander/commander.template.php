@@ -1,23 +1,26 @@
+<?php
+  $errors = [];
+?>
 <!DOCTYPE HTML>
 <html lang="en-US">
 	<head>
 	    <meta charset="UTF-8">
 		<style>
-			<?=file_get_contents(dirname(__FILE__) . "/styles.css")?>
+			<?php echo file_get_contents(dirname(__FILE__) . "/styles.css") ?>
 		</style>
 	</head>
 	<body>
 
-		<h1><?=$title?></h1>
-		<h2>Built on <?=date("F j, Y, g:i a e")?></h2>
+		<h1><?php echo $title?></h1>
+		<h2>Built on <?php echo date("F j, Y, g:i a e") ?></h2>
 
 		<div class="output">
-			<?foreach ($commands as $command) { ?>
+			<?php foreach ($commands as $command) { ?>
 
-        <span class="prompt">$</span> <span class="command"><?=$command?></span>
+        <span class="prompt">$</span> <span class="command"><?php echo $command ?></span>
 
         <?php
-        	$this->flush();
+        	$self->flush();
 
         	$descriptorspec = array(
         		0 => ["pipe", "r"],
@@ -25,7 +28,7 @@
         		2 => ["pipe", "w"],
         	);
 
-        	$this->flush();
+        	$self->flush();
         	$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
         	@fclose($pipes[0]);
 
@@ -35,21 +38,21 @@
 
         		while ($string = fgets($pipes[1])) {
         			echo trim($converter->convert($string));
-        			$this->flush();
+        			$self->flush();
         		}
 
         		while ($string = fgets($pipes[2])) {
         			if (trim($string)) {
         				$string = trim($converter->convert($string));
         				echo "<div class=\"error\">$string</div>";
-        				$this->flush();
+        				$self->flush();
         				$errors[] = $string;
         			}
 
         			$exitcode = value(proc_get_status($process),"exitcode");
 
         			if($exitcode > 0)
-        				$this->_failed = true;
+        				$self->_failed = true;
         		}
         	}
 
@@ -59,16 +62,16 @@
         	proc_close($process);
         ?>
 
-        <?$this->flush()?>
+        <?php $self->flush() ?>
 
-			<? } ?>
+			<?php } ?>
 		</div>
 
-		<?if ($this->_failed) {?>
+		<?php if ($self->_failed) {?>
 			<h1 class="error" error="false">Build Failed</h1>
-		<?} else {?>
+		<?php } else { ?>
 			<h1 class="success">Build Successful</h1>
-		<?}?>
+		<?php } ?>
 
 	</body>
 </html>

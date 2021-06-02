@@ -37,7 +37,7 @@
 				@unlink($this->_output_file);
 
 			$this->start();
-
+      $self = $this;
 			require_once("commander.template.php");
 			@ob_end_flush();
 
