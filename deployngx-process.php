@@ -50,7 +50,6 @@ $commands = [
 	"sed -i 's/{{build_start_date}}/" . $build_start_date . "/' ../frontend/dist/index.html",
 	"sed -i 's/{{process_id}}/" . getmypid() . "/' ../frontend/dist/index.html",
 	"cd ../frontend && npm install --loglevel=error",
-	"cd ../frontend && npm rebuild node-sass",
 	"cd ../frontend && npm run build " . implode(" ", $build_params),
 	"chown -R nginx:nginx ../frontend/dist",
 ];
