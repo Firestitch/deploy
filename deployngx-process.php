@@ -42,7 +42,7 @@ $commands = [
 	"cd ../ && git fetch --all 2>&1",
 	"cd ../ && git reset --hard origin/" . $branch . "  2>&1",
 	"cd ../ && git pull origin " . $branch . " 2>&1",
-	"cd ../ && git submodule foreach --recursive git reset --hard origin/master 2>&1",
+	"cd ../ && git submodule foreach --recursive git reset --hard 2>&1",
 	"cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name' 2>&1",
 	"rm -rf ../frontend/dist",
 	"mkdir ../frontend/dist",
