@@ -17,7 +17,6 @@
 		            "cd ../ && git submodule update --force --remote ".$repo." 2>&1",
 		            "cd ../".$repo." && git submodule init  2>&1",
 		            "cd ../".$repo." && git submodule update --recursive  2>&1",
-		            "cd ../".$repo." && npm rebuild node-sass",
                     "cd ../".$repo." && npm install --loglevel=error",
                     "cd ../".$repo." && npm run demo:build"];
 
