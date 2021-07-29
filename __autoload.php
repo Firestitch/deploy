@@ -1,6 +1,6 @@
 <?php
 require "vendor/autoload.php";
-require("commander/commander.inc");
+require("commander/commander.php");
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
