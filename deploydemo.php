@@ -1,5 +1,5 @@
 <?php
-require "__autoload.inc";
+require "__autoload.php";
 
 $payload = @json_decode(value($_POST, "payload"));
 $github_email = value($payload, ["pusher", "email"], "");

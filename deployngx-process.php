@@ -1,5 +1,5 @@
 <?php
-require "__autoload.inc";
+require "__autoload.php";
 
 $config = json_decode($argv[1]);
 $branch = value($config, "branch");
@@ -64,8 +64,10 @@ if (is_file($backend_dir . "command/init.php")) {
 
 if ($action_build) {
 	$title = "Building " . ucwords($environment);
-	COMMANDER::create()->build($commands, ["title" => $title,
+	COMMANDER::create()->build($commands, [
+		"title" => $title,
 		"output" => $output,
 		"output_file" => $output_file,
-		"process_key" => basename(dirname(__DIR__))]);
+		"process_key" => basename(dirname(__DIR__))
+	]);
 }
