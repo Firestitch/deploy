@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'SensioLabs\\AnsiConverter\\' => array($vendorDir . '/sensiolabs/ansi-to-html/SensioLabs/AnsiConverter'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'MiladRahimi\\' => array($vendorDir . '/miladrahimi/phpcrypt/src/MiladRahimi'),
 );

@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit31a0b423af63c35fe84e4cd9c2d32d65
 {
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'SensioLabs\\AnsiConverter\\' => 25,
+        ),
         'P' => 
         array (
             'PHPMailer\\PHPMailer\\' => 20,
@@ -18,6 +22,10 @@ class ComposerStaticInit31a0b423af63c35fe84e4cd9c2d32d65
     );
 
     public static $prefixDirsPsr4 = array (
+        'SensioLabs\\AnsiConverter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sensiolabs/ansi-to-html/SensioLabs/AnsiConverter',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -28,22 +36,11 @@ class ComposerStaticInit31a0b423af63c35fe84e4cd9c2d32d65
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'S' => 
-        array (
-            'SensioLabs\\AnsiConverter' => 
-            array (
-                0 => __DIR__ . '/..' . '/sensiolabs/ansi-to-html',
-            ),
-        ),
-    );
-
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit31a0b423af63c35fe84e4cd9c2d32d65::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit31a0b423af63c35fe84e4cd9c2d32d65::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit31a0b423af63c35fe84e4cd9c2d32d65::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
