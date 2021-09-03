@@ -6,7 +6,6 @@ $branch = value($config, "branch");
 $action = value($config, "action", "build");
 $github_branch = value($config, "github_branch");
 $action_build = preg_match("/build/", $action);
-$action_zip = preg_match("/zip/", $action);
 $output = $action == "build";
 $branch = $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
 $dir = dirname(__DIR__) . "/";
@@ -21,11 +20,6 @@ $build_start_date = date("F j, Y, g:i a e");
 $build_params = [];
 $environment = value($config, "environment", "dev");
 $build_params[] = "--{$package_name}:env=" . $environment;
-
-if ($action_zip) {
-	$build_params[] = "--{$package_name}:outputpath=dist-zip";
-	$output_file = $frontend_dir . "dist-zip/index.html";
-}
 
 if ($platform = value($config, "platform")) {
 	$build_params[] = "--{$package_name}:platform=" . $platform;
@@ -44,6 +38,18 @@ $commands = [
 	"cd ../ && git pull origin " . $branch . " 2>&1",
 	"cd ../ && git submodule foreach --recursive git reset --hard 2>&1",
 	"cd ../ && git submodule foreach 'cd \$toplevel && git submodule update --force --init \$name' 2>&1",
+];
+
+$backend = [];
+if (is_file($backend_dir . "command/upgrade.php")) {
+	$backend[] = "cd ../backend/command && php upgrade.php";
+}
+
+if (is_file($backend_dir . "command/init.php")) {
+	$backend[] = "cd ../backend/command && php init.php";
+}
+
+$frontend = [
 	"rm -rf ../frontend/dist",
 	"mkdir ../frontend/dist",
 	"cp pages/building.html ../frontend/dist/index.html",
@@ -54,13 +60,11 @@ $commands = [
 	"chown -R nginx:nginx ../frontend/dist",
 ];
 
-if (is_file($backend_dir . "command/upgrade.php")) {
-	$commands[] = "cd ../backend/command && php upgrade.php";
-}
-
-if (is_file($backend_dir . "command/init.php")) {
-	$commands[] = "cd ../backend/command && php init.php";
-}
+$commands = array_merge(
+	$commands,
+	$backend,
+	$frontend
+);
 
 if ($action_build) {
 	$title = "Building " . ucwords($environment);

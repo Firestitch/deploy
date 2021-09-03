@@ -3,7 +3,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
-class COMMANDER {
+class Commander {
 
 	protected $_output_file 	= "";
 	protected $_output_buffer 	= "";
@@ -12,7 +12,7 @@ class COMMANDER {
 	protected $_failed			= false;
 
 	static function create() {
-		return new COMMANDER();
+		return new Commander();
 	}
 
 	function build($commands, $options = ["title" => "", "capture" => true, "output" => true]) {
