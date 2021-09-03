@@ -68,7 +68,7 @@ $commands = array_merge(
 
 if ($action_build) {
 	$title = "Building " . ucwords($environment);
-	COMMANDER::create()->build($commands, [
+	Commander::create()->build($commands, [
 		"title" => $title,
 		"output" => $output,
 		"output_file" => $output_file,
