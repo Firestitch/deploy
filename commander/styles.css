@@ -1,4 +1,4 @@
-body { 
+.body-container { 
 	background-color: #000000; 
 	color: #FFFFFF; 
 	font-weight: bold; 
@@ -9,13 +9,16 @@ body {
 .error { color: red; }
 .error * { color: red !important; }
 .success { color: green; }
+
 a, a:hover, a:link {
   color: #1863C8;
   text-decoration: none;
 }
+
 .command {
 	color: #729FCF;
 }
+
 .prompt {
 	color: #6BE234;
 }
