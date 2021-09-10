@@ -5,11 +5,11 @@ use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 class Commander {
 
-	protected $_output_file 	= "";
-	protected $_output_buffer 	= "";
-	protected $_output 			= true;
-	protected $_errors			= [];
-	protected $_failed			= false;
+	protected $_output_file = "";
+	protected $_output_buffer = "";
+	protected $_output = true;
+	protected $_errors = [];
+	protected $_failed = false;
 
 	static function create() {
 		return new Commander();
@@ -18,7 +18,6 @@ class Commander {
 	function build($commands, $options = ["title" => "", "capture" => true, "output" => true]) {
 
 		$this->_options = $options;
-		$title = $this->get_option("title", "Building");
 		$this->_output = $this->get_option("output", true);
 		$this->_output_file = $this->get_option("output_file");
 		$this->_process_key = $this->get_option("process_key");

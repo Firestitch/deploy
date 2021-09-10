@@ -61,7 +61,7 @@ $frontend = [
 ];
 
 $phpstan = [
-	"php vendor/phpstan/phpstan/phpstan.phar analyse --memory-limit 1G --configuration phpstan.neon"
+	"php vendor/phpstan/phpstan/phpstan.phar analyse --memory-limit 1G --no-progress --configuration phpstan.neon 2>&1"
 ];
 
 $commands = array_merge(

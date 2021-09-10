@@ -1,77 +1,80 @@
 <?php
-  $errors = [];
+$errors = [];
 ?>
 <!DOCTYPE HTML>
 <html lang="en-US">
-	<head>
-	    <meta charset="UTF-8">
-		<style>
-			<?php echo file_get_contents(dirname(__FILE__) . "/styles.css") ?>
-		</style>
-	</head>
-	<body>
 
-		<h1><?php echo $title?></h1>
-		<h2>Built on <?php echo date("F j, Y, g:i a e") ?></h2>
+<head>
+	<meta charset="UTF-8">
+	<style>
+		<?php echo file_get_contents(dirname(__FILE__) . "/styles.css") ?>
+	</style>
+</head>
 
-		<div class="output">
-			<?php foreach ($commands as $command) { ?>
+<body>
 
-        <span class="prompt">$</span> <span class="command"><?php echo $command ?></span>
+	<h1><?php echo $title ?></h1>
+	<h2>Built on <?php echo date("F j, Y, g:i a e") ?></h2>
 
-        <?php
-        	$self->flush();
+	<div class="output">
+		<?php foreach ($commands as $command) { ?>
 
-        	$descriptorspec = array(
-        		0 => ["pipe", "r"],
-        		1 => ["pipe", "w"],
-        		2 => ["pipe", "w"],
-        	);
+			<span class="prompt">$</span> <span class="command"><?php echo $command ?></span>
 
-        	$self->flush();
-        	$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
-        	@fclose($pipes[0]);
+			<?php
+			$self->flush();
 
-        	echo "<pre>";
+			$descriptorspec = array(
+				0 => ["pipe", "r"],
+				1 => ["pipe", "w"],
+				2 => ["pipe", "w"],
+			);
 
-        	if (is_resource($process)) {
+			$self->flush();
+			$process = proc_open($command, $descriptorspec, $pipes, realpath('./'));
+			@fclose($pipes[0]);
 
-        		while ($string = fgets($pipes[1])) {
-        			echo trim($converter->convert($string));
-        			$self->flush();
-        		}
+			echo "<pre>";
 
-        		while ($string = fgets($pipes[2])) {
-        			if (trim($string)) {
-        				$string = trim($converter->convert($string));
-        				echo "<div class=\"error\">$string</div>";
-        				$self->flush();
-        				$errors[] = $string;
-        			}
+			if (is_resource($process)) {
 
-        			$exitcode = value(proc_get_status($process),"exitcode");
+				while ($string = fgets($pipes[1])) {
+					echo trim($converter->convert($string));
+					$self->flush();
+				}
 
-        			if($exitcode > 0)
-        				$self->_failed = true;
-        		}
-        	}
+				while ($string = fgets($pipes[2])) {
+					if (trim($string)) {
+						$string = trim($converter->convert($string));
+						echo "<div class=\"error\">$string</div>";
+						$self->flush();
+						$errors[] = $string;
+					}
+				}
 
-        	echo "</pre>";
-        	@fclose($pipes[1]);
-        	@fclose($pipes[2]);
-        	proc_close($process);
-        ?>
+				$exitcode = value(proc_get_status($process), "exitcode");
 
-        <?php $self->flush() ?>
+				if ($exitcode > 0)
+					$self->_failed = true;
+			}
 
-			<?php } ?>
-		</div>
+			echo "</pre>";
+			@fclose($pipes[1]);
+			@fclose($pipes[2]);
+			proc_close($process);
+			?>
 
-		<?php if ($self->_failed) {?>
-			<h1 class="error" error="false">Build Failed</h1>
-		<?php } else { ?>
-			<h1 class="success">Build Successful</h1>
+			<?php $self->flush() ?>
+
 		<?php } ?>
+	</div>
 
-	</body>
+	<?php if ($self->_failed) { ?>
+		<h1 class="error" error="false">Build Failed</h1>
+	<?php } else { ?>
+		<h1 class="success">Build Successful</h1>
+	<?php } ?>
+
+</body>
+
 </html>
