@@ -48,9 +48,10 @@ class Commander {
 
 		$this->log("BUILD-END");
 
-		if ($this->_failed)
-			foreach ($errors as $error)
-				fwrite(STDERR, $error);
+		if ($this->_failed) {
+			fwrite(STDERR, $this->_output_buffer);
+			exit(1);
+		}
 	}
 
 	function get_option($name, $default = null) {
@@ -81,54 +82,5 @@ class Commander {
 		$log[] = $message;
 
 		file_put_contents("/var/log/nginx/deploy.log", implode(" ", $log) . "\n", FILE_APPEND);
-	}
-
-	function zip($dir, $options = []) {
-
-		$dir = rtrim(str_replace("\\", "/", $dir), "\\") . "/";
-
-		if (!is_dir($dir))
-			throw new Exception("Directory does not exist");
-
-		$zip_file = sys_get_temp_dir() . "/" . value($_SERVER, "HTTP_HOST") . ".zip";
-		@unlink($zip_file);
-
-		// create recursive directory iterator
-		$files =  new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator($dir),
-			RecursiveIteratorIterator::LEAVES_ONLY
-		);
-
-		$zip = new ZipArchive();
-		if ($zip->open($zip_file, ZipArchive::CREATE) === true) {
-
-			foreach ($files as $name => $file) {
-
-				$path = str_ireplace($dir, "", str_replace("\\", "/", $file));
-
-				if (($ignore = value($options, "ignore")) && preg_match($ignore, $path)) {
-					continue;
-				}
-
-				if (is_file($file->getRealPath()))
-					$zip->addFile($file->getRealPath(), $path);
-
-				elseif (is_dir($file->getRealPath()))
-					$zip->addEmptyDir($path);
-			}
-
-			@$zip->close();
-			header('Content-Description: File Transfer');
-			header('Content-Type: application/octet-stream');
-			header('Content-Disposition: attachment; filename="' . basename($zip_file) . '"');
-			header("Content-Transfer-Encoding: binary");
-			header('Content-Length: ' . filesize($zip_file));
-			flush();
-			@readfile($zip_file);
-			@unlink($zip_file);
-			die;
-		} else {
-			die($zip->getStatusString());
-		}
 	}
 }

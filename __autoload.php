@@ -43,25 +43,20 @@ function run_process($script, $config, $notification_email, $process_file) {
 		file_put_contents($process_file, $group_process);
 	}
 
-	$errors = [];
+	$errorOutput = "";
+	$exitcode = 0;
 	if (is_resource($process)) {
-
-		while ($string = fgets($pipes[1])) {
-			echo $string;
-			@flush();
-			@ob_end_flush();
-		}
-
 		while ($string = fgets($pipes[2])) {
-			echo $string;
-			$errors[] = $string;
+			$errorOutput .= $string;
 
 			@flush();
 			@ob_end_flush();
 		}
+
+		$exitcode = value(proc_get_status($process), "exitcode");
 	}
 
-	if ($errors && $notification_email) {
+	if ($exitcode && $notification_email) {
 
 		$mail = new PHPMailer(true);
 
@@ -80,14 +75,10 @@ function run_process($script, $config, $notification_email, $process_file) {
 			$mail->setFrom("sysadmin@firestitch.com", "Firestitch Deployment");
 			$mail->addAddress($notification_email);
 
-			$error = implode("", $errors);
-
 			$host = value($_SERVER, "HTTP_HOST");
 			$mail->isHTML();
-			$mail->Subject = 	"Deploy Error For " . $host;
-			$mail->Body    = 	"The following errors where produced during the deployment process.<br><br>" .
-				"Command: " . $cmd . "<br><br>" .
-				"<div style=\"background:#000;color:#fff;padding:15px;margin:15px 0;border-radius:4px;white-space:pre-wrap;font-family:monospace;\">" . $error . "</div>";
+			$mail->Subject = "Deploy Error For " . $host;
+			$mail->Body = $errorOutput;
 			$mail->send();
 		} catch (Exception $e) {
 			echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
