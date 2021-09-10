@@ -9,6 +9,7 @@ class Commander {
 	protected $_output_buffer = "";
 	protected $_output = true;
 	protected $_errors = [];
+	protected $_options = [];
 	protected $_failed = false;
 
 	static function create() {
