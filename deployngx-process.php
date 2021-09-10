@@ -60,10 +60,15 @@ $frontend = [
 	"chown -R nginx:nginx ../frontend/dist",
 ];
 
+$phpstan = [
+	"vendor/bin/phpstan analyse --memory-limit 1G --configuration .\phpstan.neon"
+];
+
 $commands = array_merge(
 	$commands,
 	$backend,
-	$frontend
+	$frontend,
+	$phpstan
 );
 
 if ($action_build) {
