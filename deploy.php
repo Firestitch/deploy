@@ -30,7 +30,4 @@ if ($environment == "development" || $environment == "staging") {
 }
 
 if (preg_match("/build/", $action))
-  COMMANDER::create()->build($commands, ["title" => $title, "output" => $output]);
-
-if (preg_match("/zip/", $action))
-  COMMANDER::create()->zip(dirname(__DIR__) . "/frontend/dist", ["ignore" => "/^\.git/"]);
+  Commander::create()->build($commands, ["title" => $title, "output" => $output]);

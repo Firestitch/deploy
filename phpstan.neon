@@ -9,6 +9,7 @@ parameters:
     analyse:
       - ../backend/vendor
       - ../*Template.php
+      - ../*Refactor*
   parallel:
     maximumNumberOfProcesses: 32
     minimumNumberOfJobsPerProcess: 2
