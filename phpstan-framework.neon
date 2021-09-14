@@ -1,0 +1,15 @@
+parameters:
+  level: 3
+  paths:
+    - ../framework
+  scanDirectories:
+    - ../framework
+    - ../backend/vendor
+  excludePaths:
+    analyse:
+      - ../*Template.php
+      - ../*Refactor*
+  parallel:
+    maximumNumberOfProcesses: 32
+    minimumNumberOfJobsPerProcess: 2
+    processTimeout: 300.0
