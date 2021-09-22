@@ -5,6 +5,7 @@ $config = json_decode($argv[1]);
 $branch = value($config, "branch");
 $action = value($config, "action", "build");
 $github_branch = value($config, "github_branch");
+$github_username = value($config, "github_username");
 $action_build = preg_match("/build/", $action);
 $output = $action == "build";
 $branch = $branch ? $branch : trim(shell_exec("cd ../ && git rev-parse --abbrev-ref HEAD"));
@@ -32,7 +33,9 @@ if ($github_branch && $branch !== $github_branch) {
 // Aded 2>&1 to all git commands because git redirect output to error output even if its not an error
 $commands = [
 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
-	"pwd",
+	is_os_windows() ? "cd" : "echo \$PWD",
+	"echo GitHub Username: $github_username",
+	"echo GitHub Branch: $github_branch",
 	"cd ../ && git fetch --all 2>&1",
 	"cd ../ && git reset --hard origin/" . $branch . "  2>&1",
 	"cd ../ && git pull origin " . $branch . " 2>&1",

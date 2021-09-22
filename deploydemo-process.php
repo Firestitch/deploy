@@ -1,13 +1,17 @@
 <?php
 require("__autoload.php");
 
-$config 		= json_decode($argv[1]);
-$repo 			= value($config, "repo");
+$config = json_decode($argv[1]);
+$repo = value($config, "repo");
 $output_file 	= dirname(__DIR__) . "/" . $repo . "/demo/index.html";
+$github_branch = value($config, "github_branch");
+$github_username = value($config, "github_username");
 
 $commands = [
 	is_os_windows() ? "cd" : "echo \$PWD",
 	is_os_windows() ? "echo %PATH%" : "echo \$PATH",
+	"echo GitHub Username: $github_username",
+	"echo GitHub Branch: $github_branch",
 	"cd ../ && git fetch --all 2>&1",
 	"cd ../ && git reset --hard 2>&1",
 	"cd ../ && git pull 2>&1",
