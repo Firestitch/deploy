@@ -68,6 +68,7 @@ class Commander {
 
 	function flush() {
 		@ob_end_flush();
+		flush();
 		$this->start();
 	}
 
