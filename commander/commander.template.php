@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @var Commander $self
+ */
+
 $errors = [];
 ?>
 <!DOCTYPE HTML>
