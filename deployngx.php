@@ -1,4 +1,4 @@
-<?
+<?php
 require("__autoload.php");
 
 $github_payload = @json_decode(value($_POST, "payload"));
