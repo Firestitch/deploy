@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '9c6183560ec5faa874a74d70862e4c59e7dc5c63',
+    'reference' => 'b4cd8de79876cb94a0bd5e8ebe255aac54a6b5cf',
     'name' => '__root__',
   ),
   'versions' => 
@@ -31,7 +31,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '9c6183560ec5faa874a74d70862e4c59e7dc5c63',
+      'reference' => 'b4cd8de79876cb94a0bd5e8ebe255aac54a6b5cf',
     ),
     'miladrahimi/phpcrypt' => 
     array (
@@ -44,21 +44,21 @@ private static $installed = array (
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.5.3',
-      'version' => '6.5.3.0',
+      'pretty_version' => 'v6.6.0',
+      'version' => '6.6.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'baeb7cde6b60b1286912690ab0693c7789a31e71',
+      'reference' => 'e43bac82edc26ca04b36143a48bde1c051cfd5b1',
     ),
     'phpstan/phpstan' => 
     array (
-      'pretty_version' => '1.4.5',
-      'version' => '1.4.5.0',
+      'pretty_version' => '1.5.7',
+      'version' => '1.5.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '150d1fbd82fb71ff76b3bd7f6ea6006d89c5f0c3',
+      'reference' => '7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac',
     ),
     'sensiolabs/ansi-to-html' => 
     array (
