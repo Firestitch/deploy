@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'b4cd8de79876cb94a0bd5e8ebe255aac54a6b5cf',
+    'reference' => '95f0039b39bd24ed93acb816bf46cd3674393b7f',
     'name' => '__root__',
   ),
   'versions' => 
@@ -31,7 +31,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'b4cd8de79876cb94a0bd5e8ebe255aac54a6b5cf',
+      'reference' => '95f0039b39bd24ed93acb816bf46cd3674393b7f',
     ),
     'miladrahimi/phpcrypt' => 
     array (
@@ -53,12 +53,12 @@ private static $installed = array (
     ),
     'phpstan/phpstan' => 
     array (
-      'pretty_version' => '1.5.7',
-      'version' => '1.5.7.0',
+      'pretty_version' => '1.6.9',
+      'version' => '1.6.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7fb7e2e1e9f3d59a26a413b2d3d5e47f0edb75ac',
+      'reference' => '8c98899c7c54251a098befd23b50a983594a20f9',
     ),
     'sensiolabs/ansi-to-html' => 
     array (
