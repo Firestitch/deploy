@@ -11,6 +11,7 @@ class Commander {
 	protected $_errors = [];
 	protected $_options = [];
 	protected $_failed = false;
+	protected $_process_key = "";
 
 	static function create() {
 		return new Commander();
