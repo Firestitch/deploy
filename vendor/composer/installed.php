@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '95f0039b39bd24ed93acb816bf46cd3674393b7f',
+    'reference' => '5ac6a1588d315e37cbf88a4d429aa22a04f898d0',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '95f0039b39bd24ed93acb816bf46cd3674393b7f',
+      'reference' => '5ac6a1588d315e37cbf88a4d429aa22a04f898d0',
     ),
     'miladrahimi/phpcrypt' => 
     array (
@@ -31,21 +31,21 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.6.0',
-      'version' => '6.6.0.0',
+      'pretty_version' => 'v6.6.4',
+      'version' => '6.6.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e43bac82edc26ca04b36143a48bde1c051cfd5b1',
+      'reference' => 'a94fdebaea6bd17f51be0c2373ab80d3d681269b',
     ),
     'phpstan/phpstan' => 
     array (
-      'pretty_version' => '1.6.9',
-      'version' => '1.6.9.0',
+      'pretty_version' => '1.8.5',
+      'version' => '1.8.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => '8c98899c7c54251a098befd23b50a983594a20f9',
+      'reference' => 'f6598a5ff12ca4499a836815e08b4d77a2ddeb20',
     ),
     'sensiolabs/ansi-to-html' => 
     array (
