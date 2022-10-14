@@ -2,9 +2,9 @@
 require "vendor/autoload.php";
 require("commander/commander.php");
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 use MiladRahimi\PhpCrypt\Crypt;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 header("X-Accel-Buffering: no"); //Disables Nginx's gzip/buffering and allows for output streaming
 ignore_user_abort(true);
@@ -15,8 +15,8 @@ ini_set("implicit_flush", true);
 function run_process($script, $config, $notification_email, $process_file) {
 
 	$is_windows = stripos(PHP_OS, 'WIN') !== false;
-	$config 	= addslashes(json_encode($config));
-	$cmd 		= 'php ' . $script . ' "' . $config . '"';
+	$config = addslashes(json_encode($config));
+	$cmd = 'php ' . $script . ' "' . $config . '"';
 
 	if ($process_file && !$is_windows) {
 		$process = @file_get_contents($process_file);
@@ -80,7 +80,8 @@ function run_process($script, $config, $notification_email, $process_file) {
 			$mail->Subject = "Deploy Error For " . $host;
 			$mail->Body = $errorOutput;
 			$mail->send();
-		} catch (Exception $e) {
+		}
+		catch (Exception $e) {
 			echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
 		}
 	}
@@ -138,17 +139,20 @@ function value($var, $index, $default = null) {
 		}
 
 		return $default;
-	} elseif (is_array($var)) {
+	}
+	elseif (is_array($var)) {
 
 		if (@array_key_exists($index, $var))
 			return $var[$index];
-	} elseif (is_object($var)) {
+	}
+	elseif (is_object($var)) {
 
 		if (is_a($var, "ArrayAccess")) {
 
 			if (isset($var[$index]))
 				return $var[$index];
-		} elseif (isset($var->$index))
+		}
+		elseif (isset($var->$index))
 			return $var->$index;
 	}
 
