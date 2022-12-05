@@ -75,6 +75,5 @@ if ($action_build) {
 		"title" => $title,
 		"output" => $output,
 		"output_file" => $output_file,
-		"process_key" => basename(dirname(__DIR__))
 	]);
 }

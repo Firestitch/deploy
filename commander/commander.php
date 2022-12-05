@@ -11,7 +11,6 @@ class Commander {
 	protected $_errors = [];
 	protected $_options = [];
 	protected $_failed = false;
-	protected $_process_key = "";
 
 	static function create() {
 		return new Commander();
@@ -22,7 +21,6 @@ class Commander {
 		$this->_options = $options;
 		$this->_output = $this->get_option("output", true);
 		$this->_output_file = $this->get_option("output_file");
-		$this->_process_key = $this->get_option("process_key");
 		$errors = [];
 
 		$this->log("BUILD-START");
